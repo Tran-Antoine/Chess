@@ -13,7 +13,6 @@ class Knight(cp.Piece):
 
     def __init__(self, color, coords):
         super().__init__(color, coords)
-        self.moves_available()
         print(f"The knight's coordinates: {self.coords}")
 
     def moves_available(self):
@@ -34,6 +33,7 @@ class Knight(cp.Piece):
             if position[0] > 8 or position[1] > 8:
                 self.moves.remove(position)
         print(self.moves)
+        return self.moves
 
 
 class Bishop(cp.Piece):
@@ -52,8 +52,6 @@ class Bishop(cp.Piece):
             else:
                 self.minus8_to_8.append(-8 + i)
 
-        self.move_available()
-
     def moves_available(self):
         """
         How the piece moves.
@@ -64,3 +62,4 @@ class Bishop(cp.Piece):
                 if np.abs(i) == np.abs(l) and 0 < self.coords[0] + i <= 8 and 0 < self.coords[1] + l <= 8:
                     self.moves.append([self.coords[0] + i, self.coords[1] + l])
         print(self.moves)
+        return self.moves
