@@ -1,6 +1,6 @@
 from logic import gamelogic
 from rendering import board
-from player.player import Player
+from player import Player
 
 class ChessGame():
 
@@ -10,7 +10,7 @@ class ChessGame():
         self.player1 = Player.DEFAULT_1
         self.player2 = Player.DEFAULT_2
         
-    def set_players(p1, p2):
+    def set_players(self, p1, p2):
         self.player1 = p1
         self.player2 = p2
         
