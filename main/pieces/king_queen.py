@@ -10,20 +10,37 @@ class King(cp.Piece):
     The tower piece.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, color, coords):
+        super().__init__(color, coords)
         # To know whether it can make the castling or not.
-        self.alreadyMoved = False
+        self.canCastling = True
 
-    def move(self):
+    def moves_available(self):
         """
         How the piece moves.
         """
+        self.moves = []
+        for i in [-1, 0, 1]:
+            for l in [-1, 0, 1]:
+                if 0 < self.coords[0] + i <= 8 and 0 < self.coords[1] + l <= 8:
+                    self.moves.append([self.coords[0] + i, self.coords[1] + l])
+        # Remove the current position of the king
+        self.moves.remove(self.coords)
+        return self.moves
 
-    def castling(self):
+    def castling(self, other):
         """
         Le roque in french.
         """
+        if self.canCastling is True and other.canCastling is True:
+            # If the difference is negative, it is the small castling
+            if self.coords[0] - other.coords[0] > 0:
+                # Small castling
+                print("Small castling")
+            # if the difference is positive, it is the big castling
+            elif self.coords[0] - other.coords[0] < 0:
+                # Big castling
+                print("Big castling")
 
 
 class Queen(cp.Piece):

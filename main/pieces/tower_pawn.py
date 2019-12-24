@@ -34,7 +34,7 @@ class Tower(cp.Piece):
     def __init__(self):
         super().__init__()
         # To know whether it can make the castling
-        self.alreadyMoved = False
+        self.canCastling = True
 
     def move(self):
         """
