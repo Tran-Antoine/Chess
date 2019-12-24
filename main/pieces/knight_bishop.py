@@ -54,7 +54,7 @@ class Bishop(cp.Piece):
 
         self.move_available()
 
-    def move_available(self):
+    def moves_available(self):
         """
         How the piece moves.
         """
@@ -64,29 +64,3 @@ class Bishop(cp.Piece):
                 if np.abs(i) == np.abs(l) and 0 < self.coords[0] + i <= 8 and 0 < self.coords[1] + l <= 8:
                     self.moves.append([self.coords[0] + i, self.coords[1] + l])
         print(self.moves)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
