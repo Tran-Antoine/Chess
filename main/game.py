@@ -16,4 +16,4 @@ class ChessGame():
         
     def start(self):
         print(f"Starting a new game, opposing {self.player1} with {self.player2}")
-        # todo : launch game
+        self.board.show()
