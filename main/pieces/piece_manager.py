@@ -7,7 +7,7 @@ import king_queen as kq
 import tower_pawn as tp
 
 
-class pieceManager():
+class PieceManager():
     """
     """
 

@@ -1,36 +1,19 @@
-# -*- coding: utf-8 -*-
-"""
-Main file to launch the game.
-"""
-import tkinter as tk
+from logic import gamelogic
+from rendering import board
+from player.player import Player
 
-
-class View(tk.Frame):
-    """
-    The graphical interface of the game.
-    """
-
-    def __init__(self, master):
-        super().__init__(master)
-
-
-class Control(tk.Tk):
-    """
-    """
+class ChessGame():
 
     def __init__(self):
-        super().__init__()
-
-
-    def choosePiece(self, event):
-        """
-        Choose the piece on which the mouse is.
-        """
-
-    def movePiece(self, event):
-        """
-        Move the piece onto the next case.
-        """
-
-if __name__ == "__main__":
-    Control().mainloop()
+        self.logic = gamelogic.GameLogic()
+        self.board = board.ChessBoard()
+        self.player1 = Player.DEFAULT_1
+        self.player2 = Player.DEFAULT_2
+        
+    def set_players(p1, p2):
+        self.player1 = p1
+        self.player2 = p2
+        
+    def start(self):
+        print(f"Starting a new game, opposing {self.player1} with {self.player2}")
+        # todo : launch game
