@@ -17,7 +17,9 @@ class ChessGame():
     def start(self):
         print(f"Starting a new game, opposing {self.player1} with {self.player2}")
         self.board.show()
-        
+         # call this to test the rendering system : self._test_input()
+    
+    def _test_input(self):
         """
         The following code is for testing only.
         This input parser has nothing to do here, and is totally incomplete
@@ -25,11 +27,15 @@ class ChessGame():
         move = input("Enter your next move, 'stop' to interrupt the program\n")
         
         while move != 'stop':
-            target, destination = move.split()
-            conversion = lambda l: 'ABCDEFGH'.index(l)
-            initial_position = (conversion(target[0]), int(target[1])-1)
-            final_position = (conversion(destination[0]), int(destination[1])-1)
-            print(f"Input successfully translated : Player wants to move {initial_position} to {final_position}")
-            packet = api.ChessUpdatePacket({initial_position: final_position})
-            self.board.update(packet)
-            move = input("Enter your next move, 'stop' to interrupt the program\n")
+            try:
+                target, destination = move.upper().split()
+                conversion = lambda letter: 'ABCDEFGH'.index(letter)
+                initial_position = (conversion(target[0]), int(target[1])-1)
+                final_position = (conversion(destination[0]), int(destination[1])-1)
+                # print(f"Input successfully translated : Player wants to move {initial_position} to {final_position}")
+                packet = api.ChessUpdatePacket({initial_position: final_position})
+                self.board.update(packet)
+            except ValueError:
+                print("Invalid input, try again")
+            finally:
+                move = input("Enter your next move, 'stop' to interrupt the program\n")

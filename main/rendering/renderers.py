@@ -20,7 +20,7 @@ class ConsoleRenderer(api.Renderer):
 
     def __init__(self):
         super().__init__()
-        self.rows = [['' for _ in range(8)] for _ in range(8)]
+        self.rows = [[ConsoleRenderer.EMPTY_TILE for _ in range(8)] for _ in range(8)]
         
     def initialize(self):
         # todo : change, the renderer should not do that itself, that work is for the pieces from 'get_renderables'
@@ -29,12 +29,15 @@ class ConsoleRenderer(api.Renderer):
 
     def update(self, packet, force_update=False):
         super().update(packet, force_update)
-        print(self.rows)
         self._display()
     
+    def render_call(self, renderable: api.Renderable):
+        renderable.render_console(self)
+
     def _display(self):
         for row in self.rows[::-1]:
-            print(''.join(row))
+            print(('').join([7 * ' ' if char == ' ' else char + 6*(' ') for char in row]))
+            print('\n')
 
     def get_renderables(self):
         white_row_back = initial_row(0, 'white')
@@ -42,4 +45,6 @@ class ConsoleRenderer(api.Renderer):
         black_row_front = initial_row(6, 'black')
         black_row_back = initial_row(7, 'black')
 
-        return white_row_front + white_row_back + black_row_front + black_row_back
+        return white_row_back + white_row_front + black_row_front + black_row_back
+        
+ConsoleRenderer.EMPTY_TILE = '- '
