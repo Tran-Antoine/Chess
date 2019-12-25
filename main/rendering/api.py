@@ -118,5 +118,5 @@ class Renderer():
         for renderable in self.renderables:
             needs_update = renderable.update(packet)
             if not renderable.destroyed and (force_update or needs_update):
-                self.render_call(renderable)                
+                self.render_call(renderable)
         self.renderables = list(filter(lambda r: not r.destroyed, self.renderables))

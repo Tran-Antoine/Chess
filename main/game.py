@@ -1,12 +1,12 @@
 from logic import gamelogic
-from rendering import board, api
+from rendering import board, api, renderers
 from player import Player
 
 class ChessGame():
 
     def __init__(self):
         self.logic = gamelogic.GameLogic()
-        self.board = board.ChessBoard()
+        self.board = board.ChessBoard(renderers.ConsoleRenderer())
         self.player1 = Player.DEFAULT_1
         self.player2 = Player.DEFAULT_2
         
@@ -17,7 +17,7 @@ class ChessGame():
     def start(self):
         print(f"Starting a new game, opposing {self.player1} with {self.player2}")
         self.board.show()
-         # call this to test the rendering system : self._test_input()
+        # self._test_input() # uncomment this to test the rendering system
     
     def _test_input(self):
         """

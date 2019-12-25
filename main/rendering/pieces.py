@@ -1,5 +1,5 @@
 import rendering.api as api
-import rendering.renderers as renderers
+import rendering.renderers as renderers # todo : why does api.py need this remote import ??
 
 class RenderablePiece(api.Renderable):
     """
@@ -12,6 +12,10 @@ class RenderablePiece(api.Renderable):
         self.color = color
     
     def console_symbol(self):
+        """
+        Defined to return the symbol of the piece.
+        Note that the returned value is not necessarily constant, since its value might depend on the color
+        """
         raise NotImplementedError()
             
     def update(self, packet: api.ChessUpdatePacket):
@@ -29,6 +33,11 @@ class RenderablePiece(api.Renderable):
         return True
         
     def render_console(self, renderer):
+        """
+        Updates the display by modifying the grid of pieces hold by the renderer.
+        The current position of the piece is replaced by an empty tile.
+        Then, the next position is replaced by the symbol of the piece
+        """
         # print(f"Rendering piece {type(self)} from {self.position} to {self.next_position}")
         old_x = self.position[0]
         old_y = self.position[1]
@@ -38,7 +47,7 @@ class RenderablePiece(api.Renderable):
             return
         x = self.next_position[0]
         y = self.next_position[1]
-        renderer.rows[old_y][old_x] = '  '
+        renderer.rows[old_y][old_x] = renderers.ConsoleRenderer.EMPTY_TILE
         renderer.rows[y][x] = self.console_symbol()
         self.position = self.next_position
         self.next_position = None
@@ -48,7 +57,6 @@ class PawnRenderable(RenderablePiece):
 
     def __init__(self, initial_position, color):
         super().__init__(initial_position, color)
-        self.image = None # TODO : create an image here
      
     def console_symbol(self):
         return '♙'
@@ -57,7 +65,6 @@ class KnightRenderable(RenderablePiece):
 
     def __init__(self, initial_position, color):
         super().__init__(initial_position, color)
-        self.image = None # TODO : create an image here
      
     def console_symbol(self):
         return '♘' if self.color == 'white' else '♞'
@@ -66,7 +73,6 @@ class BishopRenderable(RenderablePiece):
  
     def __init__(self, initial_position, color):
         super().__init__(initial_position, color)
-        self.image = None # TODO : create an image here
      
     def console_symbol(self):
         return '♗' if self.color == 'white' else '♝'
@@ -75,7 +81,6 @@ class RookRenderable(RenderablePiece):
 
     def __init__(self, initial_position, color):
         super().__init__(initial_position, color)
-        self.image = None # TODO : create an image here
      
     def console_symbol(self):
         return '♖' if self.color == 'white' else '♜'
@@ -84,7 +89,6 @@ class QueenRenderable(RenderablePiece):
 
     def __init__(self, initial_position, color):
         super().__init__(initial_position, color)
-        self.image = None # TODO : create an image here
      
     def console_symbol(self):
         return '♕' if self.color == 'white' else '♛'
@@ -93,7 +97,6 @@ class KingRenderable(RenderablePiece):
 
     def __init__(self, initial_position, color):
         super().__init__(initial_position, color)
-        self.image = None # TODO : create an image here
      
     def console_symbol(self):
         return '♔' if self.color == 'white' else '♚' 
