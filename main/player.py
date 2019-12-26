@@ -20,9 +20,10 @@ class Player():
         self.coords_letter = ["A", "B", "C", "D", "E", "F", "G", "H"]
         """A mettre dehors depuis la classe qui gère les deux joueurs"""
         self.imaginary_board = pp.ImaginaryBoard()
-        self.pieces = [kq.King(self.color, [3, 4], self.imaginary_board),
-                       kb.Bishop(self.color, [3, 3], self.imaginary_board),
-                       kb.Knight(self.color, [3, 1], self.imaginary_board)]
+        self.pieces = [kq.King(self.color, [4, 3], self.imaginary_board),
+                       kb.Bishop(self.color, [2, 3], self.imaginary_board),
+                       kb.Knight(self.color, [3, 1], self.imaginary_board),
+                       tp.Tower(self.color, [1, 2], self.imaginary_board)]
 
     def start_test(self):
         self.answer = input("Veuillez la case sur laquelle la pièce va bouger: """)
@@ -61,7 +62,6 @@ class Color():
     def __eq__(self, other):
         return self.color_name == other.color_name
 
-        
 
 # default constants
 Color.WHITE = Color("white")

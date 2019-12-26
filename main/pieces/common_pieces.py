@@ -41,7 +41,10 @@ class Piece():
         return self.name
 
     def move(self, former_coord, next_coord):
-        """Move the piece to the next position."""
+        """
+        Move the piece to the next position. This method must be called from
+        outside of the class.
+        """
         self.coords = next_coord
         for index, position in enumerate(self.board.white_position):
             print(former_coord, position)
