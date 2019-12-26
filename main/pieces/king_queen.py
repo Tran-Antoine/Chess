@@ -2,7 +2,7 @@
 """
 The king and the queen.
 """
-import common_pieces as cp
+import pieces.common_pieces as cp
 import numpy as np
 
 class King(cp.Piece):
@@ -10,10 +10,11 @@ class King(cp.Piece):
     The tower piece.
     """
 
-    def __init__(self, color, coords):
-        super().__init__(color, coords)
+    def __init__(self, color, coords, Board):
+        super().__init__(color, coords, Board)
         # To know whether it can make the castling or not.
         self.canCastling = True
+        self.name = "King"
 
     def moves_available(self):
         """
@@ -23,9 +24,9 @@ class King(cp.Piece):
         for i in [-1, 0, 1]:
             for l in [-1, 0, 1]:
                 if 0 < self.coords[0] + i <= 8 and 0 < self.coords[1] + l <= 8:
-                    self.moves.append([self.coords[0] + i, self.coords[1] + l])
-        # Remove the current position of the king
-        self.moves.remove(self.coords)
+                    # To know if there is already a white piece on the case
+                    if not [self.coords[0] + i, self.coords[1] + l] in self.board.white_position:
+                        self.moves.append([self.coords[0] + i, self.coords[1] + l])
         return self.moves
 
     def castling(self, other):
@@ -48,20 +49,13 @@ class Queen(cp.Piece):
     The tower piece.
     """
 
-    def __init__(self, color, coords):
-        super().__init__(color, coords)
-
-        # A list from -8 to 8, useful for the moves later.
-        self.minus8_to_8 = []
-        for i in range(16):
-            if i >= 8:
-                self.minus8_to_8.append(i - 7)
-            else:
-                self.minus8_to_8.append(-8 + i)
+    def __init__(self, color, coords, Board):
+        super().__init__(color, coords, Board)
+        self.name = "Queen"
 
     def moves_available(self):
         """
-        How the piece moves.
+        How the piece moves without obstacles.
         """
         self.moves = []
 
@@ -70,15 +64,24 @@ class Queen(cp.Piece):
                 # Diagonal moves
                 if np.abs(i) == np.abs(l) and 0 < self.coords[0] + i <= 8 and 0 < self.coords[1] + l <= 8:
                     self.moves.append([self.coords[0] + i, self.coords[1] + l])
+            
             # Horizontal moves
             if 0 < self.coords[0] + i <= 8:
                 self.moves.append([self.coords[0] + i, self.coords[1]])
             # Vertical moves
             if 0 < self.coords[1] + i <= 8:
                 self.moves.append([self.coords[0], self.coords[1] + i])
+        self.is_obstructing()
         return self.moves
 
-
+    def is_obstructing(self):
+        """
+        Verify if there is a piece that obstructs the passage of another piece.
+        """
+        for move in self.moves:
+            self.column = move[0] - self.coords[0]
+            self.row = move[1] - self.coords[1]
+            print(self.column, self.row)
 
 
 
