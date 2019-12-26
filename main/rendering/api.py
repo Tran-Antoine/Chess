@@ -33,7 +33,7 @@ class Renderable():
     Renderables are managed by a Renderer. Renderers construct or update a displayable result each frame,
     by asking every renderable that they hold to update themselves, providing modifications to the current result.
     Eventually, once modified by every renderable, the result is displayed once per frame on the screen.
-    However, renderables are not always enclined to bring modification the the constructed display. Therefore, rendering
+    However, renderables are not always enclined to bring modification to the constructed display. Therefore, rendering
     updates are performed only if the update() method returns True, meaning that the object wants to modify the display.
     The renders method take care of that action, and must be defined for each Renderer implementation available.
     
