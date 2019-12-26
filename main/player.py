@@ -23,7 +23,7 @@ class Player():
         self.pieces = [kq.King(self.color, [4, 3], self.imaginary_board),
                        kb.Bishop(self.color, [2, 3], self.imaginary_board),
                        kb.Knight(self.color, [3, 1], self.imaginary_board),
-                       tp.Tower(self.color, [1, 2], self.imaginary_board)]
+                       kq.Queen(self.color, [1, 2], self.imaginary_board)]
 
     def start_test(self):
         self.answer = input("Veuillez la case sur laquelle la pièce va bouger: """)
@@ -32,6 +32,7 @@ class Player():
                 for piece in self.pieces:
                     if piece.__str__() == self.answer:
                         print(f"Coords: {self.coords_letter[piece.coords[0] - 1]}{piece.coords[1]}")
+                        print(f"mouvements possibles: {piece.moves_available()}")
             else:
                 self.moved = False
                 self.before, self.next = self.answer.upper().split(" ")

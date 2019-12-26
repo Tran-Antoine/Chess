@@ -21,13 +21,6 @@ class Piece():
         self.coords = coords
         # The image of the piece
         self.image = None
-        # For the movements of some piece
-        self.minus8_to_8 = []
-        for i in range(16):
-            if i >= 8:
-                self.minus8_to_8.append(i - 7)
-            else:
-                self.minus8_to_8.append(-8 + i)
 
         if self.color.color_name == "black":
             self.board.black_position.append(self.coords)

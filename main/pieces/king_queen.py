@@ -3,6 +3,7 @@
 The king and the queen.
 """
 import pieces.common_pieces as cp
+import pieces.move_bishop_queen_tower as bqt
 import numpy as np
 
 class King(cp.Piece):
@@ -45,54 +46,11 @@ class King(cp.Piece):
                 print("Big castling")
 
 
-class Queen(cp.Piece):
+class Queen(bqt.Moves):
     """
     The tower piece.
     """
 
     def __init__(self, color, coords, Board):
-        super().__init__(color, coords, Board, "queen")
-
-    def moves_available(self):
-        """
-        How the piece moves without obstacles.
-        """
-        self.moves = []
-
-        for i in self.minus8_to_8:
-            for l in self.minus8_to_8:
-                # Diagonal moves
-                if np.abs(i) == np.abs(l) and 0 < self.coords[0] + i <= 8 and 0 < self.coords[1] + l <= 8:
-                    self.moves.append([self.coords[0] + i, self.coords[1] + l])
-            
-            # Horizontal moves
-            if 0 < self.coords[0] + i <= 8:
-                self.moves.append([self.coords[0] + i, self.coords[1]])
-            # Vertical moves
-            if 0 < self.coords[1] + i <= 8:
-                self.moves.append([self.coords[0], self.coords[1] + i])
-        self.is_obstructing()
-        return self.moves
-
-    def is_obstructing(self):
-        """
-        Verify if there is a piece that obstructs the passage of another piece.
-        """
-        for move in self.moves:
-            self.column = move[0] - self.coords[0]
-            self.row = move[1] - self.coords[1]
-            print(self.column, self.row)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        self.list = [-8, 0, 8]
+        super().__init__(color, coords, Board, "queen", self.list)
