@@ -12,9 +12,7 @@ class Knight(cp.Piece):
     """
 
     def __init__(self, color, coords, Board):
-        super().__init__(color, coords, Board)
-        self.name = "Knight"
-        print(f"The knight's coordinates: {self.coords}")
+        super().__init__(color, coords, Board, "knight")
 
     def moves_available(self):
         """
@@ -24,16 +22,16 @@ class Knight(cp.Piece):
         # Every move possible when there is no obstacles
         for i in [-1, -2, 1, 2]:
             for l in [-1, -2, 1, 2]:
-                if np.abs(i) != np.abs(l):
+                if np.abs(i) != np.abs(l) and [self.coords[0] + i, self.coords[1] + l] not in self.board.white_position:
                     self.moves.append([self.coords[0] + i, self.coords[1] + l])
 
         # To know whether the knight is on the edge of the board and remove
         # the positions which are outside the board.
         self.available = list(self.moves)
         for position in self.available:
-            if position[0] > 8 or position[1] > 8:
+            if position[0] > 8 or position[0] <= 0 or position[1] > 8 or position[1] <= 0 or position in self.board.white_position:
                 self.moves.remove(position)
-        print(self.moves)
+        print(self, self.moves)
         return self.moves
 
 
@@ -43,8 +41,7 @@ class Bishop(cp.Piece):
     """
 
     def __init__(self, color, coords, Board):
-        super().__init__(color, coords, Board)
-        self.name = "Bishop"
+        super().__init__(color, coords, Board, "bishop")
 
     def moves_available(self):
         """
@@ -55,7 +52,6 @@ class Bishop(cp.Piece):
             for l in self.minus8_to_8:
                 if np.abs(i) == np.abs(l) and 0 < self.coords[0] + i <= 8 and 0 < self.coords[1] + l <= 8:
                     self.moves.append([self.coords[0] + i, self.coords[1] + l])
-        print(self.moves)
         self.is_obstructing()
         return self.moves
 
@@ -88,16 +84,4 @@ class Bishop(cp.Piece):
                         self.remove_move = True
                     
                     self.next_coords = [self.next_coords[0] + self.next[0], self.next_coords[1] + self.next[1]]
-
-        print(self.moves)
-
-                    
-
-
-
-
-
-
-
-
-
+        print(self, self.moves)

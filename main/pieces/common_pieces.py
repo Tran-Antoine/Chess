@@ -9,13 +9,13 @@ class Piece():
     Common links between every pieces.
     """
 
-    def __init__(self, color, coords, Board):
+    def __init__(self, color, coords, Board, name):
         # To know the position of each pieces
         self.board = Board
         self.coords_letter = ["A", "B", "C", "D", "E", "F", "G", "H"]
         self.coords_number = [str(x + 1) for x in range(8)]
         self.position = None
-        self.name = None
+        self.name = name
         self.color = color
         # a list [x, y]
         self.coords = coords
@@ -34,8 +34,12 @@ class Piece():
         else:
             self.board.white_position.append(self.coords)
 
+        print(f"The {self}'s coordinates: {self.coords_letter[self.coords[0] - 1]}{self.coords[1]}")
+
+
     def __str__(self):
         return self.name
+
     def move(self, former_coord, next_coord):
         """Move the piece to the next position."""
         self.coords = next_coord

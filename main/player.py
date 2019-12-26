@@ -20,9 +20,9 @@ class Player():
         self.coords_letter = ["A", "B", "C", "D", "E", "F", "G", "H"]
         """A mettre dehors depuis la classe qui gère les deux joueurs"""
         self.imaginary_board = pp.ImaginaryBoard()
-        self.pieces = [kq.King(self.color, [2, 2], self.imaginary_board),
+        self.pieces = [kq.King(self.color, [3, 4], self.imaginary_board),
                        kb.Bishop(self.color, [3, 3], self.imaginary_board),
-                       kq.King(self.color, [5, 5], self.imaginary_board)]
+                       kb.Knight(self.color, [3, 1], self.imaginary_board)]
 
     def start_test(self):
         self.answer = input("Veuillez la case sur laquelle la pièce va bouger: """)
@@ -30,7 +30,7 @@ class Player():
             if len(self.answer.split(" ")) == 1:
                 for piece in self.pieces:
                     if piece.__str__() == self.answer:
-                        print("Coords: ", piece.coords)
+                        print(f"Coords: {self.coords_letter[piece.coords[0] - 1]}{piece.coords[1]}")
             else:
                 self.moved = False
                 self.before, self.next = self.answer.upper().split(" ")
