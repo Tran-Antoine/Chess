@@ -1,5 +1,29 @@
 import rendering.api as api
 import rendering.renderers as renderers # todo : why does api.py need this remote import ??
+import tkinter
+
+class RenderableBoard(api.Renderable):
+
+    def __init__(self):
+        super().__init__()
+        
+    def update(self, packet: api.ChessUpdatePacket):
+        # Board only need to be updated once, by the initial force update of the renderer
+        return False
+    
+    def render_console(self, renderer):
+        for i, row in enumerate(renderer.rows):
+            for j, tile in enumerate(row):
+                if tile == None:
+                    renderer.rows[i][j] = renderers.ConsoleRenderer.EMPTY_TILE
+    
+    def render_tkinter(self, renderer):
+        display = renderer.thread.display
+        white = True
+        for i in range(1, 9):
+            for j in range(1, 9):
+                tile = tkinter.Frame(master=display, bg=('white' if white else 'black'))
+                display.grid(row=i, column=j)
 
 class RenderablePiece(api.Renderable):
     """

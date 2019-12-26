@@ -1,5 +1,7 @@
 import rendering.api as api
 import rendering.pieces as pieces
+import threading
+import tkinter
 
 def initial_row(row, color):
     """
@@ -34,7 +36,7 @@ class ConsoleRenderer(api.Renderer):
         Constructs a ConsoleRenderer, initializing the grid with empty tiles
         """
         super().__init__()
-        self.rows = [[ConsoleRenderer.EMPTY_TILE for _ in range(8)] for _ in range(8)]
+        self.rows = [[None for _ in range(8)] for _ in range(8)] # init 'null' grid
         
     def initialize(self):
         """
@@ -79,7 +81,35 @@ class ConsoleRenderer(api.Renderer):
         black_row_front = initial_row(6, 'black')
         black_row_back = initial_row(7, 'black')
 
-        return white_row_back + white_row_front + black_row_front + black_row_back
+        return [pieces.RenderableBoard()] + white_row_back + white_row_front + black_row_front + black_row_back
 
 # Constant for the ConsoleRenderer class
 ConsoleRenderer.EMPTY_TILE = '- '
+
+class TkinterDisplay(threading.Thread):
+
+    def __init__(self):
+        threading.Thread.__init__(self)
+
+    def run(self):
+        self.display = tkinter.Tk()
+        self.display.mainloop()
+        
+class TkinterRenderer(api.Renderer):
+
+    def __init__(self):
+        super().__init__()
+        self.thread = None
+        
+    def get_renderables(self):
+        return [pieces.RenderableBoard()]
+    
+    def initialize(self):
+        self.thread = TkinterDisplay()
+        self.thread.start()
+        self.update(None, True)
+        print("Display successfully initialized")
+
+    def render_call(self, renderable):
+        renderable.render_tkinter(self)
+    
