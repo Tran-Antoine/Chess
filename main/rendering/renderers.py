@@ -104,7 +104,18 @@ class TkinterRenderer(api.Renderer):
         self.thread = None
         
     def get_renderables(self):
-        return [pieces.RenderableBoard()]
+        """
+        Loads the 4 initial rows, each piece being an instance of the RenderablePiece class.
+        The board in itself does not need to be managed by a renderable, since it is just a range
+        of dots.
+        """
+        white_row_back = initial_row(0, 'white')
+        white_row_front = initial_row(1, 'white')
+        black_row_front = initial_row(6, 'black')
+        black_row_back = initial_row(7, 'black')
+
+        return [pieces.RenderableBoard()] + white_row_back + white_row_front + black_row_front + black_row_back
+
     
     def initialize(self):
         self.thread = TkinterDisplay()
