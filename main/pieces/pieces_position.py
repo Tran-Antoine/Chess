@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-File which binds the files between them.
+get the position of every pieces.
 """
-import knight_bishop as kb
-import king_queen as kq
-import tower_pawn as tp
 
 
-class PieceManager():
+class ImaginaryBoard():
     """
     """
 
     def __init__(self):
-        self.isCheck = False
+        self.white_position = []
+        self.black_position = []
 
     def canMove(self):
         """
