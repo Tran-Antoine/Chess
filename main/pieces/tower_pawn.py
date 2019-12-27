@@ -20,11 +20,6 @@ class Pawn(cp.Piece):
         How the piece moves.
         """
 
-    def eat(self):
-        """
-        How the piece eats the other pieces.
-        """
-
     def transform(self):
         """
         Transform the piece into another when it reaches the end of the board.
@@ -39,7 +34,7 @@ class Tower(cp.Piece):
     def __init__(self):
         super().__init__()
         # To know whether it can make the castling
-        self.alreadyMoved = False
+        self.canCastling = True
 
     def move(self):
         """
