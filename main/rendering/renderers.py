@@ -1,5 +1,6 @@
 import rendering.api as api
 import rendering.pieces as pieces
+import threading, queue
 
 def initial_row(row, color):
     """
@@ -21,7 +22,25 @@ def initial_row(row, color):
     ]
     
 
-class ConsoleRenderer(api.Renderer):
+class ChessRenderer(api.Renderer):
+
+    def __init__(self):
+        super().__init__()
+        
+    def get_renderables(self):
+        """
+        Loads the 4 initial rows, each piece being an instance of the RenderablePiece class.
+        The board in itself does not need to be managed by a renderable, since it is just a range
+        of dots.
+        """
+        white_row_back = initial_row(0, 'white')
+        white_row_front = initial_row(1, 'white')
+        black_row_front = initial_row(6, 'black')
+        black_row_back = initial_row(7, 'black')
+        # The order in which the renderables are placed in the list doesn't matter at all
+        return [pieces.RenderableBoard()] + white_row_back + white_row_front + black_row_front + black_row_back
+
+class ConsoleRenderer(ChessRenderer):
     """
     An implementation of the Renderer class for playing in the console.
     Note that since it only cares about the console, no GUI is built, therefore some input parsers
@@ -34,7 +53,7 @@ class ConsoleRenderer(api.Renderer):
         Constructs a ConsoleRenderer, initializing the grid with empty tiles
         """
         super().__init__()
-        self.rows = [[ConsoleRenderer.EMPTY_TILE for _ in range(8)] for _ in range(8)]
+        self.rows = [[None for _ in range(8)] for _ in range(8)] # init 'null' grid
         
     def initialize(self):
         """
@@ -68,18 +87,35 @@ class ConsoleRenderer(api.Renderer):
             print(('').join([7 * ' ' if char == ' ' else char + 6*(' ') for char in row]))
             print('\n')
 
-    def get_renderables(self):
-        """
-        Loads the 4 initial rows, each piece being an instance of the RenderablePiece class.
-        The board in itself does not need to be managed by a renderable, since it is just a range
-        of dots.
-        """
-        white_row_back = initial_row(0, 'white')
-        white_row_front = initial_row(1, 'white')
-        black_row_front = initial_row(6, 'black')
-        black_row_back = initial_row(7, 'black')
-
-        return white_row_back + white_row_front + black_row_front + black_row_back
-
 # Constant for the ConsoleRenderer class
 ConsoleRenderer.EMPTY_TILE = '- '
+
+class TkinterDisplay(threading.Thread):
+
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.queue = queue.Queue()
+
+    def run(self):
+        import tkinter
+        root = tkinter.Tk()
+        root.title("Chess")
+        root.tk.call('wm', 'iconphoto', root._w, tkinter.PhotoImage(file='rendering/assets/icon.gif'))
+        self.queue.put(root)
+        root.mainloop()
+        
+class TkinterRenderer(ChessRenderer):
+
+    def __init__(self):
+        super().__init__()
+        self.thread = None
+    
+    def initialize(self):
+        self.thread = TkinterDisplay()
+        self.thread.start()
+        self.update(None, True)
+        print("Display successfully initialized")
+
+    def render_call(self, renderable):
+        renderable.render_tkinter(self)
+    
