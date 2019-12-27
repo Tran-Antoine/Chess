@@ -1,7 +1,6 @@
 import rendering.api as api
 import rendering.pieces as pieces
-import threading
-import tkinter
+import threading, queue
 
 def initial_row(row, color):
     """
@@ -90,10 +89,13 @@ class TkinterDisplay(threading.Thread):
 
     def __init__(self):
         threading.Thread.__init__(self)
+        self.queue = queue.Queue()
 
     def run(self):
-        self.display = tkinter.Tk()
-        self.display.mainloop()
+        import tkinter
+        root = tkinter.Tk()
+        self.queue.put(root)
+        root.mainloop()
         
 class TkinterRenderer(api.Renderer):
 

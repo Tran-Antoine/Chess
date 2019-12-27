@@ -1,6 +1,7 @@
 import rendering.api as api
 import rendering.renderers as renderers # todo : why does api.py need this remote import ??
 import tkinter
+import threading
 
 class RenderableBoard(api.Renderable):
 
@@ -18,12 +19,15 @@ class RenderableBoard(api.Renderable):
                     renderer.rows[i][j] = renderers.ConsoleRenderer.EMPTY_TILE
     
     def render_tkinter(self, renderer):
-        display = renderer.thread.display
+        display = renderer.thread.queue.get(timeout=1)
+        renderer.thread.queue.put(display)
         white = True
         for i in range(1, 9):
             for j in range(1, 9):
-                tile = tkinter.Frame(master=display, bg=('white' if white else 'black'))
-                display.grid(row=i, column=j)
+                tile = tkinter.Frame(master=display, bg=('#eccca1' if white else '#c78b57'), width=80, height=80)
+                tile.grid(row=i, column=j)
+                white = not white
+            white = not white
 
 class RenderablePiece(api.Renderable):
     """
