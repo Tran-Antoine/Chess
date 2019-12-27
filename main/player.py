@@ -6,7 +6,6 @@ File which creates the players.
 import pieces.king_queen as kq
 import pieces.knight_bishop as kb
 import pieces.tower_pawn as tp
-import pieces.pieces_position as pp
 
 
 class Player():
@@ -17,39 +16,25 @@ class Player():
     def __init__(self, color, name):
         self.color = color
         self.name = name
-        self.coords_letter = ["A", "B", "C", "D", "E", "F", "G", "H"]
-        """A mettre dehors depuis la classe qui gère les deux joueurs"""
-        self.imaginary_board = pp.ImaginaryBoard()
-        self.pieces = [kq.King(self.color, [4, 3]),
-                       kb.Bishop(self.color, [2, 3]),
-                       kb.Knight(self.color, [3, 1]),
-                       kq.Queen(self.color, [1, 2]),
-                       tp.Rook(self.color, [1, 1])]
+        self.set_piece()        
 
-    def start_test(self):
-        self.answer = input("Veuillez la case sur laquelle la pièce va bouger: """)
-        while self.answer != "q":
-            if len(self.answer.split(" ")) == 1:
-                for piece in self.pieces:
-                    if piece.__str__() == self.answer:
-                        print(f"Coords: {self.coords_letter[piece.coords[0] - 1]}{piece.coords[1]}")
-                        # NEED AN ARG BOARD
-                        print(f"mouvements possibles: {piece.moves_available()}")
-            else:
-                self.moved = False
-                self.before, self.next = self.answer.upper().split(" ")
-                self.former_coords = [int(self.coords_letter.index(self.before[0]) + 1), int(self.before[1])]
-                self.next_coords = [int(self.coords_letter.index(self.next[0]) + 1), int(self.next[1])]
-                for piece in self.pieces:
-                    if piece.coords == self.former_coords and self.next_coords in piece.moves_available(): # NEED AN ARG BOARD
-                        piece.move(self.former_coords, self.next_coords)
-                        print(f"{piece} est bien allé en {self.next}")
-                        self.moved = True
-                        break
-                if not self.moved:
-                    print("Entrée invalide, réessayez.")
-            self.answer = input("Veuillez la case sur laquelle la pièce va bouger: """)
+    def set_piece(self):
+        """
+        Set the pieces on their location on the board
+        """
+        self.pieces_order = [tp.Rook, kb.Knight, kb.Bishop, kq.Queen,
+                             kq.King, kb.Bishop, kb.Knight, tp.Rook]
+        self.pieces = []
+        if self.color == self.color.WHITE:
+            for index in range(8):
+                self.pieces.append(tp.Pawn(self.color, [index + 1, 2]))
+                self.pieces.append(self.pieces_order[index](self.color, [index + 1, 1]))
+        else:
+            for index in range(8):
+                self.pieces.append(tp.Pawn(self.color, [index + 1, 7]))
+                self.pieces.append(self.pieces_order[index](self.color, [index + 1, 8]))
 
+                
     def __str__(self):
         return f"{self.name} (playing {self.color})"
 
@@ -71,5 +56,4 @@ Color.WHITE = Color("white")
 Color.BLACK = Color("black")
 
 Player.DEFAULT_1 = Player(Color.WHITE, "Player 1")
-Player.DEFAULT_1.start_test()
-#Player.DEFAULT_2 = Player(Color.BLACK, "Player 2")
+Player.DEFAULT_2 = Player(Color.BLACK, "Player 2")
