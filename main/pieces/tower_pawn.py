@@ -12,12 +12,12 @@ class Pawn(cp.Piece):
     The tower piece.
     """
 
-    def __init__(self, color, coords, Board):
-        super().__init__(color, coords, Board)
+    def __init__(self, color, coords):
+        super().__init__(color, coords)
         # To know whether it can move two cases or only one
         self.alreadyMoved = False
 
-    def moves_available(self):
+    def moves_available(self, board):
         """
         How the piece moves.
         """
@@ -50,16 +50,13 @@ class Pawn(cp.Piece):
         if self.color.color_name == "black" and self.coords[1] == 8:
             print("TRANSFORMATION DES COLONS!!!")
 
-class Tower(cp.Piece):
+class Rook(bqt.DirectionalPiece):
     """
     The tower piece.
     """
 
-    def __init__(self, color, coords, Board):
-        super().__init__(color, coords, Board, "tower")
+    def __init__(self, color, coords):
+        self.one_case_list = [[0, 1], [0, -1], [1, 0], [-1, 0]]
+        super().__init__(color, coords, "rook")
         # To know whether it can make the castling
         self.canCastling = True
-
-    def moves_available(self):
-        pass
-

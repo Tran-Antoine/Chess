@@ -11,13 +11,13 @@ class King(cp.Piece):
     The tower piece.
     """
 
-    def __init__(self, color, coords, Board):
-        super().__init__(color, coords, Board, "king")
+    def __init__(self, color, coords):
+        super().__init__(color, coords, "king")
         # To know whether it can make the castling or not.
         self.canCastling = True
 
 
-    def moves_available(self):
+    def moves_available(self, board):
         """
         How the piece moves.
         """
@@ -26,7 +26,7 @@ class King(cp.Piece):
             for l in [-1, 0, 1]:
                 if 0 < self.coords[0] + i <= 8 and 0 < self.coords[1] + l <= 8:
                     # To know if there is already a white piece on the case
-                    if not [self.coords[0] + i, self.coords[1] + l] in self.board.white_position:
+                    if not [self.coords[0] + i, self.coords[1] + l] in board.white_position:
                         self.moves.append([self.coords[0] + i, self.coords[1] + l])
         print(self, self.moves)
         return self.moves
@@ -46,11 +46,12 @@ class King(cp.Piece):
                 print("Big castling")
 
 
-class Queen(bqt.Moves):
+class Queen(bqt.DirectionalPiece):
     """
     The tower piece.
     """
 
-    def __init__(self, color, coords, Board):
-        self.list = [-8, 0, 8]
-        super().__init__(color, coords, Board, "queen", self.list)
+    def __init__(self, color, coords):
+        self.one_case_list = [[1, 1], [1, -1], [-1, 1], [-1, -1],
+                              [0, 1], [0, -1], [1, 0], [-1, 0]]
+        super().__init__(color, coords, "queen")

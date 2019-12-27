@@ -12,10 +12,10 @@ class Knight(cp.Piece):
     The tower piece.
     """
 
-    def __init__(self, color, coords, Board):
-        super().__init__(color, coords, Board, "knight")
+    def __init__(self, color, coords):
+        super().__init__(color, coords, "knight")
 
-    def moves_available(self):
+    def moves_available(self, board):
         """
         How the piece moves.
         """
@@ -23,7 +23,7 @@ class Knight(cp.Piece):
         # Every move possible when there is no obstacles
         for i in [-1, -2, 1, 2]:
             for l in [-1, -2, 1, 2]:
-                if np.abs(i) != np.abs(l) and [self.coords[0] + i, self.coords[1] + l] not in self.board.white_position:
+                if np.abs(i) != np.abs(l) and [self.coords[0] + i, self.coords[1] + l] not in board.white_position:
                     if 0 < self.coords[0] + i <= 8 and 0 < self.coords[1] + l <= 8:
                         self.moves.append([self.coords[0] + i, self.coords[1] + l])
 
@@ -31,11 +31,11 @@ class Knight(cp.Piece):
         return self.moves
 
 
-class Bishop(bqt.Moves):
+class Bishop(bqt.DirectionalPiece):
     """
     The tower piece.
     """
 
-    def __init__(self, color, coords, Board):
-        self.list = [-8, 8]
-        super().__init__(color, coords, Board, "bishop", self.list)
+    def __init__(self, color, coords):
+        self.one_case_list = [[1, 1], [-1, 1], [-1, -1], [1, -1]]
+        super().__init__(color, coords, "bishop")
