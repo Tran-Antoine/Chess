@@ -37,7 +37,6 @@ class ChessGame():
                     if self.position == piece.position:
                         print(piece)
                         print(f"position: {self.imaginary_board.position_letter[piece.position[0] - 1]}{piece.position[1]}")
-                        # NEED AN ARG BOARD
                         print(f"mouvements possibles: {piece.moves_available(self.imaginary_board)}")
             else:
                 self.moved = False

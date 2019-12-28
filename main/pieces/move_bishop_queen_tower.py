@@ -20,12 +20,6 @@ class DirectionalPiece(cm.Piece):
         """
         where the bishop can go.
         """
-        if self.color.color_name == "white":
-            self.allies_position = board.white_position
-            self.ennemies_position = board.black_position
-        else:
-            self.allies_position = board.black_position
-            self.ennemies_position = board.white_position
         self.moves = []
         # to divide and move 1 case at once
         self.divisor = 8
@@ -36,13 +30,15 @@ class DirectionalPiece(cm.Piece):
             while self.index != self.divisor:
                 # if the piece goes out of the board or if it is on another piece
                 # stop the loop
-                if (self.next in self.allies_position or self.next[0] > 8
-                    or self.next[0] <= 0 or self.next[1] > 8 or self.next[1] <= 0):
-                    break
-                if self.next in self.ennemies_position:
+                self.piece = board.piece_at_location(self.next)
+                if self.piece is not None and self.location_on_board(self.next):
+                    if self.piece.color == self.color:
+                        break
+                    else:
+                        self.moves.append(self.next)
+                        break
+                elif self.piece is None and self.location_on_board(self.next):
                     self.moves.append(self.next)
-                    break
-                self.moves.append(self.next)
                 self.next = [self.next[0] + one_case[0], self.next[1] + one_case[1]]
                 self.index += 1
         return self.moves

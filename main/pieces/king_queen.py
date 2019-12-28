@@ -14,7 +14,7 @@ class King(cp.Piece):
     def __init__(self, color, position):
         super().__init__(color, position, "king")
         # To know whether it can make the castling or not.
-
+        self.can_castle = True
 
     def moves_available(self, board):
         """
@@ -23,12 +23,16 @@ class King(cp.Piece):
         self.moves = []
         for i in [-1, 0, 1]:
             for l in [-1, 0, 1]:
-                if 0 < self.position[0] + i <= 8 and 0 < self.position[1] + l <= 8:
-                    # To know if there is already a white piece on the case
-                    if not [self.position[0] + i, self.position[1] + l] in board.white_position:
-                        self.moves.append([self.position[0] + i, self.position[1] + l])
+                self.next = [self.position[0] + i, self.position[1] + l]
+                # verify if the next location is on the board and if it can goes there
+                if self.location_on_board(self.next) and board.can_move_at_location(self.next, self.color):
+                    self.moves.append(self.next)
         print(self, self.moves)
         return self.moves
+
+    def move(self, former_position, next_position, board):
+        super().move(former_position, next_position, board)
+        self.can_castle = False
 
     def castling(self, other):
         """

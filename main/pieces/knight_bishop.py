@@ -19,18 +19,14 @@ class Knight(cp.Piece):
         """
         How the piece moves.
         """
-        if self.color.color_name == "white":
-            self.allies_position = board.white_position
-        else:
-            self.allies_position = board.black_position
         self.moves = []
-        # Every move possible when there is no obstacles
-        print(self.allies_position)
+        # Every move possible
         for i in [-1, -2, 1, 2]:
             for l in [-1, -2, 1, 2]:
-                if np.abs(i) != np.abs(l) and [self.position[0] + i, self.position[1] + l] not in self.allies_position:
-                    if 0 < self.position[0] + i <= 8 and 0 < self.position[1] + l <= 8:
-                        self.moves.append([self.position[0] + i, self.position[1] + l])
+                self.next_position = [self.position[0] + i, self.position[1] + l]
+                if np.abs(i) != np.abs(l) and board.can_move_at_location(self.next_position, self.color):
+                    if 0 < self.next_position[0] <= 8 and 0 < self.next_position[1] <= 8:
+                        self.moves.append(self.next_position)
 
         print(self, self.moves)
         return self.moves

@@ -30,18 +30,19 @@ class Piece():
         Move the piece to the next position. This method must be called from
         outside of the class.
         """
-        if self.color.color_name == "white":
-            self.allies_position = board.white_position
-        else:
-            self.allies_position = board.black_position
-
         for index, piece in enumerate(board.pieces):
             if former_position == piece.position:
                 piece.position = next_position
-                self.allies_position[self.allies_position.index(former_position)] = next_position
+                piece.position = next_position
                 break
-        print("Salut")
 
     def moves_available(self, board):
         raise NotImplementedError()
 
+    def location_on_board(self, loc):
+        """
+        Verify if the position is on the board, i.e > 0 and < 8
+        """
+        if 0 < loc[0] <= 8 and 0 < loc[1] <= 8:
+            return True
+        return False
