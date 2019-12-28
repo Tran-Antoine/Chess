@@ -41,9 +41,8 @@ class RenderablePiece(api.Renderable):
         """
         # print(f"Rendering piece {type(self)} from {self.position} to {self.next_position}")
         old_x = self.position.x
-        old_y = self.position.x
+        old_y = self.position.y
         if self.next_position == None: # meaning that we just want to 'refresh'
-            # print(self.console_symbol() + " goes at loc " + str(self.position))
             renderer.rows[old_y][old_x] = self.console_symbol()
             return
         x = self.next_position.x

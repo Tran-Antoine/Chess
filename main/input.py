@@ -21,7 +21,10 @@ class InputParser():
         tile_modifications = {}
         tile_modifications[vectors[0]] = vectors[1]
         # temporarily converting vector to list. Vectors should be used everywhere
-        destination_piece = board.piece_at_location([])
+        destination_piece = board.piece_at_location(vectors[1].tolist())
+        if destination_piece != None:
+            tile_modifications[vectors[1]] = Vector2f(-1, -1)
+        return api.ChessUpdatePacket(tile_modifications)
         
         
     
