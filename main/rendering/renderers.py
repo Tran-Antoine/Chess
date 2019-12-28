@@ -1,5 +1,6 @@
 import rendering.api as api
 import rendering.pieces as pieces
+from util.vector import Vector2f
 
 def initial_row(row, color):
     """
@@ -8,16 +9,16 @@ def initial_row(row, color):
     Row 0 or row 7 correpond to the defense line, containing the king
     """
     if row == 1 or row == 6:
-        return [pieces.PawnRenderable((x, row), color) for x in range(8)]
+        return [pieces.PawnRenderable(Vector2f(x, row), color) for x in range(8)]
     return [
-        pieces.RookRenderable((0, row), color),
-        pieces.KnightRenderable((1, row), color),
-        pieces.BishopRenderable((2, row), color),
-        pieces.QueenRenderable((3, row), color),
-        pieces.KingRenderable((4, row), color),
-        pieces.BishopRenderable((5, row), color),
-        pieces.KnightRenderable((6, row), color),
-        pieces.RookRenderable((7, row), color)
+        pieces.RookRenderable(Vector2f(0, row), color),
+        pieces.KnightRenderable(Vector2f(1, row), color),
+        pieces.BishopRenderable(Vector2f(2, row), color),
+        pieces.QueenRenderable(Vector2f(3, row), color),
+        pieces.KingRenderable(Vector2f(4, row), color),
+        pieces.BishopRenderable(Vector2f(5, row), color),
+        pieces.KnightRenderable(Vector2f(6, row), color),
+        pieces.RookRenderable(Vector2f(7, row), color)
     ]
     
 

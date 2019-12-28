@@ -19,9 +19,9 @@ class ChessGame():
         
     def start(self):
         print(f"Starting a new game, opposing {self.player1} with {self.player2}")
-        self.start_test()
-#        self.board.show()
-        # self._test_input() # uncomment this to test the rendering system
+        #self.start_test()
+        self.board.show()
+        self._test_input() # uncomment this to test the rendering system
 
 
     def start_test(self):
