@@ -3,13 +3,13 @@
 The knight and the bishop.
 """
 import pieces.common_pieces as cp
-import pieces.move_bishop_queen_tower as bqt
+import pieces.move_bishop_queen_rook as bqr
 import numpy as np
 
 
 class Knight(cp.Piece):
     """
-    The tower piece.
+    The knight piece.
     """
 
     def __init__(self, color, position):
@@ -32,9 +32,9 @@ class Knight(cp.Piece):
         return self.moves
 
 
-class Bishop(bqt.DirectionalPiece):
+class Bishop(bqr.DirectionalPiece):
     """
-    The tower piece.
+    The bishop piece.
     """
 
     def __init__(self, color, position):

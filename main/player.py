@@ -5,7 +5,7 @@ File which creates the players.
 # todo : have the pieces module import work
 import pieces.king_queen as kq
 import pieces.knight_bishop as kb
-import pieces.tower_pawn as tp
+import pieces.rook_pawn as rp
 
 
 class Player():
@@ -22,16 +22,16 @@ class Player():
         """
         Set the pieces on their location on the board
         """
-        self.pieces_order = [tp.Rook, kb.Knight, kb.Bishop, kq.Queen,
-                             kq.King, kb.Bishop, kb.Knight, tp.Rook]
+        self.pieces_order = [rp.Rook, kb.Knight, kb.Bishop, kq.Queen,
+                             kq.King, kb.Bishop, kb.Knight, rp.Rook]
         self.pieces = []
         if self.color == self.color.WHITE:
             for index in range(8):
-                self.pieces.append(tp.Pawn(self.color, [index + 1, 2]))
+                self.pieces.append(rp.Pawn(self.color, [index + 1, 2]))
                 self.pieces.append(self.pieces_order[index](self.color, [index + 1, 1]))
         else:
             for index in range(8):
-                self.pieces.append(tp.Pawn(self.color, [index + 1, 7]))
+                self.pieces.append(rp.Pawn(self.color, [index + 1, 7]))
                 self.pieces.append(self.pieces_order[index](self.color, [index + 1, 8]))
 
                 

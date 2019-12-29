@@ -14,13 +14,14 @@ class ImaginaryBoard():
         self.players = self.player1, self.player2
         self.position_letter = ["A", "B", "C", "D", "E", "F", "G", "H"]
 
-        self.all_pieces()
+        self.pieces = self.load_pieces()
 
-    def all_pieces(self):
-        self.pieces = []
+    def load_pieces(self):
+        self.pieces_loaded = []
         for player in self.players:
             for piece in player.pieces:
-                self.pieces.append(piece)
+                self.pieces_loaded.append(piece)
+        return self.pieces_loaded
 
     def can_move_at_location(self, loc, color):
         """
@@ -40,7 +41,24 @@ class ImaginaryBoard():
             if piece.position == loc:
                 return piece
         return None
-        
+
+    def get_rooks(self, color):
+        self.rooks = []
+        for piece in self.pieces:
+            if piece.name == "rook" and piece.color == color:
+                self.rooks.append(piece)
+        return self.rooks
+
+    def make_castle(self, distance_rook_king, rook_moved, next_pos, piece):
+        """
+        Move the king and the rook, so they make a castle.
+        """
+        piece.position = next_pos
+        self.rooks = self.get_rooks(piece.color)
+        for rook in self.rooks:
+            if rook.position[0] + distance_rook_king == piece.position[0]:
+                rook.position = [rook.position[0] + rook_moved, rook.position[1]]
+                rook.can_castle = False
 
     def canMove(self):
         """

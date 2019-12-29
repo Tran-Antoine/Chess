@@ -3,12 +3,12 @@
 The tower and the pawn.
 """
 import pieces.common_pieces as cp
-import pieces.move_bishop_queen_tower as bqt
+import pieces.move_bishop_queen_rook as bqr
 
 
 class Pawn(cp.Piece):
     """
-    The tower piece.
+    The pawn piece.
     """
 
     def __init__(self, color, position):
@@ -56,9 +56,9 @@ class Pawn(cp.Piece):
         if self.color.color_name == "black" and self.position[1] == 8:
             print("TRANSFORMATION DES COLONS!!!")
 
-class Rook(bqt.DirectionalPiece):
+class Rook(bqr.DirectionalPiece):
     """
-    The tower piece.
+    The rook piece.
     """
 
     def __init__(self, color, position):
@@ -66,3 +66,7 @@ class Rook(bqt.DirectionalPiece):
         super().__init__(color, position, "rook")
         # To know whether it can make the castling
         self.can_castle = True
+
+    def move(self, former_position, next_position, board):
+        super().move(former_position, next_position, board)
+        self.can_castle = False

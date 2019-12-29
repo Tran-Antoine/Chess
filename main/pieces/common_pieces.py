@@ -6,7 +6,7 @@ Common links between every pieces.
 
 class Piece():
     """
-    Common links between every pieces.
+    Common links between every piece.
     """
 
     def __init__(self, color, position, name):
@@ -32,7 +32,6 @@ class Piece():
         """
         for index, piece in enumerate(board.pieces):
             if former_position == piece.position:
-                piece.position = next_position
                 piece.position = next_position
                 break
 
