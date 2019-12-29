@@ -2,6 +2,7 @@
 """
 get the position of every pieces.
 """
+from rendering.api import ChessUpdatePacket
 
 
 class ImaginaryBoard():
@@ -60,7 +61,13 @@ class ImaginaryBoard():
                 rook.position = [rook.position[0] + rook_moved, rook.position[1]]
                 rook.can_castle = False
 
-    def canMove(self):
+    def to_packet(self, former_position, next_position):
         """
-        Verify if the piece can move to a case.
+        return the change on the board
         """
+        self.tiles_modification = {}
+        self.tiles_modification[former_position] = next_position
+        for piece in self.pieces:
+            if piece.position == next_position:
+                self.tiles_modification[piece.position] = [-1, -1]
+        return ChessUpdatePacket(self.tiles_modification)
