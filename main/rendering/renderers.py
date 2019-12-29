@@ -1,5 +1,6 @@
 import rendering.api as api
 import rendering.pieces as pieces
+from util.vector import Vector2f
 
 def initial_row(row, color):
     """
@@ -8,16 +9,16 @@ def initial_row(row, color):
     Row 0 or row 7 correpond to the defense line, containing the king
     """
     if row == 1 or row == 6:
-        return [pieces.PawnRenderable((x, row), color) for x in range(8)]
+        return [pieces.PawnRenderable(Vector2f(x, row), color) for x in range(8)]
     return [
-        pieces.RookRenderable((0, row), color),
-        pieces.KnightRenderable((1, row), color),
-        pieces.BishopRenderable((2, row), color),
-        pieces.QueenRenderable((3, row), color),
-        pieces.KingRenderable((4, row), color),
-        pieces.BishopRenderable((5, row), color),
-        pieces.KnightRenderable((6, row), color),
-        pieces.RookRenderable((7, row), color)
+        pieces.RookRenderable(Vector2f(0, row), color),
+        pieces.KnightRenderable(Vector2f(1, row), color),
+        pieces.BishopRenderable(Vector2f(2, row), color),
+        pieces.QueenRenderable(Vector2f(3, row), color),
+        pieces.KingRenderable(Vector2f(4, row), color),
+        pieces.BishopRenderable(Vector2f(5, row), color),
+        pieces.KnightRenderable(Vector2f(6, row), color),
+        pieces.RookRenderable(Vector2f(7, row), color)
     ]
     
 
@@ -65,7 +66,8 @@ class ConsoleRenderer(api.Renderer):
         The display method tries to minimize the wrong alignment that the latter issue causes.
         """
         for row in self.rows[::-1]:
-            print(('').join([7 * ' ' if char == ' ' else char + 6*(' ') for char in row]))
+            for char in row:
+                print(char + (4 * ' '), end='')
             print('\n')
 
     def get_renderables(self):
@@ -82,4 +84,4 @@ class ConsoleRenderer(api.Renderer):
         return white_row_back + white_row_front + black_row_front + black_row_back
 
 # Constant for the ConsoleRenderer class
-ConsoleRenderer.EMPTY_TILE = '- '
+ConsoleRenderer.EMPTY_TILE = '-'
