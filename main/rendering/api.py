@@ -25,7 +25,9 @@ class ChessUpdatePacket():
         if initial in self.tile_modifications.keys():
             return self.tile_modifications[initial]
         return None # explicit return statement to clarify
-  
+
+ChessUpdatePacket.STOP = ChessUpdatePacket({})
+
 class Renderable():
 
     """

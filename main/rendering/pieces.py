@@ -39,14 +39,14 @@ class RenderablePiece(api.Renderable):
         The current position of the piece is replaced by an empty tile.
         Then, the next position is replaced by the symbol of the piece
         """
-        # print(f"Rendering piece {type(self)} from {self.position} to {self.next_position}")
+        print(f"Rendering piece {type(self)} from {self.position} to {self.next_position}")
         old_x = self.position.x
         old_y = self.position.y
-        if self.next_position == None: # meaning that we just want to 'refresh'
+        if self.next_position is None: # meaning that we just want to 'refresh'
             renderer.rows[old_y][old_x] = self.console_symbol()
             return
         x = self.next_position.x
-        y = self.next_position.x
+        y = self.next_position.y
         renderer.rows[old_y][old_x] = renderers.ConsoleRenderer.EMPTY_TILE
         renderer.rows[y][x] = self.console_symbol()
         self.position = self.next_position

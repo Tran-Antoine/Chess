@@ -14,10 +14,12 @@ class Vector2f():
         return [self.x, self.y]
         
     def __eq__(self, other):
+        if other == None:
+            return False
         return self.x == other.x and self.y == other.y
         
     def __hash__(self):
         return hash(self.__str__())
         
     def __str__(self):
-        return f'{self.x}, {self.y}'
+        return f'({self.x}; {self.y})'

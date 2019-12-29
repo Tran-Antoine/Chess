@@ -66,7 +66,8 @@ class ConsoleRenderer(api.Renderer):
         The display method tries to minimize the wrong alignment that the latter issue causes.
         """
         for row in self.rows[::-1]:
-            print(('').join([7 * ' ' if char == ' ' else char + 6*(' ') for char in row]))
+            for char in row:
+                print(char + (4 * ' '), end='')
             print('\n')
 
     def get_renderables(self):
@@ -83,4 +84,4 @@ class ConsoleRenderer(api.Renderer):
         return white_row_back + white_row_front + black_row_front + black_row_back
 
 # Constant for the ConsoleRenderer class
-ConsoleRenderer.EMPTY_TILE = '- '
+ConsoleRenderer.EMPTY_TILE = '-'
