@@ -22,15 +22,18 @@ class Pawn(cp.Piece):
         """
         self.moves = []
         # When it is the first time the pawn moves, it can moves 2 cases
-        if not self.alreadyMoved and self.color.color_name == "black":
-            self.moves.append([self.position[0], self.position[1] - 2])
-        elif not self.alreadyMoved and self.color.color_name == "white":
-            self.moves.append([self.position[0], self.position[1] + 2])
-
-        if self.color.color_name == "black":
+        if self.color.color_name == "black" and board.piece_at_location([self.position[0], self.position[1] - 1]) is None:
             self.moves.append([self.position[0], self.position[1] - 1])
-        elif self.color.color_name == "white":
+
+            if not self.alreadyMoved and board.piece_at_location([self.position[0], self.position[1] - 2]) is None:
+                self.moves.append([self.position[0], self.position[1] - 2])
+
+        elif self.color.color_name == "white" and board.piece_at_location([self.position[0], self.position[1] + 1]) is None:
             self.moves.append([self.position[0], self.position[1] + 1])
+
+            if not self.alreadyMoved and board.piece_at_location([self.position[0], self.position[1] + 2]) is None:
+                self.moves.append([self.position[0], self.position[1] + 2])
+        self.can_eat(board)
         return self.moves
 
     def move(self, former_position, next_position, board):
@@ -41,11 +44,24 @@ class Pawn(cp.Piece):
         super().move(former_position, next_position, board)
         self.alreadyMoved = True
 
-    def canEat(self, other):
+    def can_eat(self, board):
         """
         Verify if there is an adverse piece that can be eaten.
         """
-        
+        self.can_go = []
+        if self.color.color_name == "black":
+            self.diagonal_left = [self.position[0] - 1, self.position[1] - 1]
+            self.diagonal_right = [self.position[0] + 1, self.position[1] - 1]
+        elif self.color.color_name == "white":
+            self.diagonal_left = [self.position[0] - 1, self.position[1] + 1]
+            self.diagonal_right = [self.position[0] + 1, self.position[1] + 1]
+            
+        self.can_go.append(board.piece_at_location(self.diagonal_left))
+        self.can_go.append(board.piece_at_location(self.diagonal_right))
+        for piece in self.can_go:
+            if piece is not None:
+                if piece.color != self.color:
+                    self.moves.append(piece.position)
 
     def transform(self):
         """

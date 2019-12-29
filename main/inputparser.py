@@ -6,7 +6,7 @@ Created on Wed Dec 25 19:40:32 2019
 """
 import rendering.api as api
 import util.vector as vector
-import pieces.pieces_position as pmanager
+import pieces.pieces_manager as pmanager
 from typing import List
 
 class InputParser():
