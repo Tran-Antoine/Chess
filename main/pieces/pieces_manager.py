@@ -3,6 +3,7 @@
 get the position of every pieces.
 """
 from rendering.api import ChessUpdatePacket
+from util.vector import Vector2f
 
 
 class ImaginaryBoard():
@@ -14,7 +15,6 @@ class ImaginaryBoard():
         self.player2 = player2
         self.players = self.player1, self.player2
         self.position_letter = ["A", "B", "C", "D", "E", "F", "G", "H"]
-
         self.pieces = self.load_pieces()
 
     def load_pieces(self):
@@ -50,24 +50,48 @@ class ImaginaryBoard():
                 self.rooks.append(piece)
         return self.rooks
 
-    def make_castle(self, distance_rook_king, rook_moved, next_pos, piece):
+    def make_castle(self, delta_x, next_pos, piece):
         """
         Move the king and the rook, so they make a castle.
         """
-        piece.position = next_pos
-        self.rooks = self.get_rooks(piece.color)
-        for rook in self.rooks:
-            if rook.position[0] + distance_rook_king == piece.position[0]:
-                rook.position = [rook.position[0] + rook_moved, rook.position[1]]
-                rook.can_castle = False
+        self.tiles_modification[Vector2f(piece.position[0], piece.position[1])] = Vector2f(next_pos[0], next_pos[1])
+
+        if delta_x == 1:
+            pass
+        elif delta_x > 2:
+            piece.can_castle = False
+            for rook in self.get_rooks:
+                if piece.position[0] - rook.position[0] == 4:
+                    self.tiles_modification[Vector2f(rook.position[0], rook.position[1])] = Vector2f(rook.position[0] + 3, rook.position[1])
+                    rook.can_castle = False
+        elif delta_x < 2:
+            piece.can_castle = False
+            for rook in self.get_rooks:
+                if piece.position[0] - rook.position[0] == 3:
+                    self.tiles_modification[Vector2f(rook.position[0], rook.position[1])] = Vector2f(rook.position[0] - 2, rook.position[1])
+                    rook.can_castle = False
+
+    def is_valid(self, former_position, next_position):
+        """
+        Verify if the piece can move to the given location.
+        """
+        for piece in self.pieces:
+            if piece.position == former_position and next_position in piece.moves_available(self):
+                return True
+        return False
 
     def to_packet(self, former_position, next_position):
         """
         return the change on the board
         """
         self.tiles_modification = {}
-        self.tiles_modification[former_position] = next_position
-        for piece in self.pieces:
-            if piece.position == next_position:
-                self.tiles_modification[piece.position] = [-1, -1]
+        if self.is_valid(former_position, next_position):
+            self.initial_vector = Vector2f(former_position[0], former_position[1])
+            self.tiles_modification[self.initial_vector] = Vector2f(next_position[0], next_position[1])
+            for piece in self.pieces:
+                if piece.position == next_position and piece.name == "king":
+                    self.delta_x = piece.position[0] - next_position[0]
+                    self.make_castle(self.delta_x, )
+                elif piece.position == next_position:
+                    self.tiles_modification[Vector2f(piece.position[0], piece.position[1])] = Vector2f(-1, -1)
         return ChessUpdatePacket(self.tiles_modification)

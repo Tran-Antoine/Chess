@@ -4,7 +4,7 @@ The king and the queen.
 """
 import pieces.common_pieces as cp
 import pieces.move_bishop_queen_rook as bqr
-import numpy as np
+
 
 class King(cp.Piece):
     """
