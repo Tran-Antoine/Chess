@@ -91,7 +91,7 @@ class ImaginaryBoard():
             for piece in self.pieces:
                 if piece.position == next_position and piece.name == "king":
                     self.delta_x = piece.position[0] - next_position[0]
-                    self.make_castle(self.delta_x, )
+                    self.make_castle(self.delta_x, next_position, piece)
                 elif piece.position == next_position:
                     self.tiles_modification[Vector2f(piece.position[0], piece.position[1])] = Vector2f(-1, -1)
         return ChessUpdatePacket(self.tiles_modification)
