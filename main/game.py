@@ -4,6 +4,7 @@ from player import Player
 from pieces.pieces_manager import ImaginaryBoard
 import util.vector as vector
 
+
 class ChessGame():
 
     def __init__(self, player1=Player.DEFAULT_1, player2=Player.DEFAULT_2):
