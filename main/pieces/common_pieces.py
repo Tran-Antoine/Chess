@@ -20,16 +20,6 @@ class Piece():
     def __str__(self):
         return self.name
 
-    def move(self, former_position, next_position, board):
-        """
-        Move the piece to the next position. This method must be called from
-        outside of the class.
-        """
-        for index, piece in enumerate(board.pieces):
-            if former_position == piece.position:
-                piece.position = next_position
-                break
-
     def moves_available(self, board):
         raise NotImplementedError()
 

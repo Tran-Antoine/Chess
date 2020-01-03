@@ -33,7 +33,6 @@ class King(cp.Piece):
             self.add_castling_move(piece, board)
         return self.moves
 
-
     def add_castling_move(self, rook, board):
         if not (self.can_castle and rook.can_castle):
             return

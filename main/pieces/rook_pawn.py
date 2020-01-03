@@ -15,6 +15,8 @@ class Pawn(cp.Piece):
         super().__init__(color, position, "pawn")
         # To know whether it can move two cases or only one
         self.alreadyMoved = False
+        # To know whether it can be taken by the en passant
+        self.first_move = False
 
     def moves_available(self, board):
         """
@@ -30,14 +32,6 @@ class Pawn(cp.Piece):
                 
         self.can_eat(board)
         return self.moves
-
-    def move(self, former_position, next_position, board):
-        """
-        Move the piece to the next position. This method must be called from
-        outside of the class.
-        """
-        super().move(former_position, next_position, board)
-        self.alreadyMoved = True
 
     def can_eat(self, board):
         """
@@ -58,14 +52,20 @@ class Pawn(cp.Piece):
                 if piece.color != self.color:
                     self.moves.append(piece.position)
 
+    def en_passant(self, board):
+        """
+        The special case of the pawn when it can take another piece
+        """
+        
+
     def transform(self):
         """
         Transform the piece into another when it reaches the end of the board.
         """
-        if self.color.color_name == "white" and self.position.y == 8:
-            print("TRANSFORMATION DES RENOIS!!!")
-        if self.color.color_name == "black" and self.position.y == 8:
+        if self.color.color_name == "white" and self.position.y == 7:
             print("TRANSFORMATION DES COLONS!!!")
+        if self.color.color_name == "black" and self.position.y == 0:
+            print("TRANSFORMATION DES RENOIS!!!")
 
 class Rook(bqr.DirectionalPiece):
     """
@@ -77,7 +77,3 @@ class Rook(bqr.DirectionalPiece):
         super().__init__(color, position, "rook")
         # To know whether it can make the castling
         self.can_castle = True
-
-    def move(self, former_position, next_position, board):
-        super().move(former_position, next_position, board)
-        self.can_castle = False
