@@ -48,24 +48,23 @@ class ImaginaryBoard():
                 self.rooks.append(piece)
         return self.rooks
 
-    def make_castle(self, delta_x, next_pos, piece):
+    def castle(self, delta_x, next_pos, piece):
         """
         Move the king and the rook, so they make a castle.
         """
-        self.tiles_modification[piece.position] = next_pos
-
         if delta_x == 1:
             pass
-        elif delta_x > 2:
+        elif delta_x == 2:
             piece.can_castle = False
-            for rook in self.get_rooks:
+            for rook in self.get_rooks(piece.color):
                 if piece.position.x - rook.position.x == 4:
                     self.tiles_modification[rook.position] = Vector2f(rook.position.x + 3, rook.position.y)
                     rook.can_castle = False
-        elif delta_x < 2:
+        elif delta_x == -2:
             piece.can_castle = False
-            for rook in self.get_rooks:
-                if piece.position.x - rook.position.x == 3:
+            for rook in self.get_rooks(piece.color):
+                print(piece.position.x - rook.position.x)
+                if piece.position.x - rook.position.x == -3:
                     self.tiles_modification[rook.position] = Vector2f(rook.position.x - 2, rook.position.y)
                     rook.can_castle = False
 
@@ -78,6 +77,13 @@ class ImaginaryBoard():
                 return True
         return False
 
+    def move_players_pieces(self, tiles_modification):
+        """
+        """
+        for piece in self.pieces:
+            if piece.position in tiles_modification.keys():
+                piece.position = tiles_modification[piece.position]
+
     def process_move(self, former_position, next_position):
         """
         return the change on the board
@@ -87,9 +93,10 @@ class ImaginaryBoard():
             self.initial_vector = Vector2f(former_position.x, former_position.y)
             self.tiles_modification[self.initial_vector] = next_position
             for piece in self.pieces:
-                if piece.position == next_position and piece.name == "king":
+                if piece.position == former_position and piece.name == "king":
                     self.delta_x = piece.position.x - next_position.x
-                    self.make_castle(self.delta_x, next_position, piece)
+                    self.castle(self.delta_x, next_position, piece)
                 elif piece.position == next_position:
                     self.tiles_modification[piece.position] = Vector2f(-1, -1)
+            self.move_players_pieces(self.tiles_modification)
         return ChessUpdatePacket(self.tiles_modification)

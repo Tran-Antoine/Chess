@@ -27,12 +27,12 @@ class Player():
         self.pieces = []
         if self.color == self.color.WHITE:
             for index in range(8):
-                self.pieces.append(rp.Pawn(self.color, Vector2f(index + 1, 2)))
-                self.pieces.append(self.pieces_order[index](self.color, Vector2f(index + 1, 1)))
+                self.pieces.append(rp.Pawn(self.color, Vector2f(index, 1)))
+                self.pieces.append(self.pieces_order[index](self.color, Vector2f(index, 0)))
         else:
             for index in range(8):
-                self.pieces.append(rp.Pawn(self.color, Vector2f(index + 1, 7)))
-                self.pieces.append(self.pieces_order[index](self.color, Vector2f(index + 1, 8)))
+                self.pieces.append(rp.Pawn(self.color, Vector2f(index, 6)))
+                self.pieces.append(self.pieces_order[index](self.color, Vector2f(index, 7)))
 
                 
     def __str__(self):

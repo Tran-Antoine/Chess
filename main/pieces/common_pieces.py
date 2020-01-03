@@ -17,8 +17,6 @@ class Piece():
         self.name = name
         self.color = color
 
-#        print(f"The {self}'s coordinates: {self.position_letter[self.position[0] - 1]}{self.position[1]}")
-
     def __str__(self):
         return self.name
 
@@ -39,6 +37,6 @@ class Piece():
         """
         Verify if the position is on the board, i.e > 0 and < 8
         """
-        if 0 < loc.x <= 8 and 0 < loc.y <= 8:
+        if 0 <= loc.x <= 7 and 0 <= loc.y <= 7:
             return True
         return False

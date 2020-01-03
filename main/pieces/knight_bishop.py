@@ -25,7 +25,7 @@ class Knight(cp.Piece):
             for l in [-1, -2, 1, 2]:
                 self.next_position = Vector2f(self.position.x + i, self.position.y + l)
                 if np.abs(i) != np.abs(l) and board.can_move_at_location(self.next_position, self.color):
-                    if 0 < self.next_position.x <= 8 and 0 < self.next_position.y <= 8:
+                    if 0 <= self.next_position.x < 8 and 0 <= self.next_position.y < 8:
                         self.moves.append(self.next_position)
 
         print(self, self.moves)
