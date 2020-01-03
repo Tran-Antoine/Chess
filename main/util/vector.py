@@ -23,3 +23,6 @@ class Vector2f():
         
     def __str__(self):
         return f'({self.x}; {self.y})'
+        
+    def __repr__(self):
+        return f'Vector2f({self.x}, {self.y})'

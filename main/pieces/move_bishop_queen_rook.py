@@ -5,7 +5,7 @@ Created on Thu Dec 26 17:12:01 2019
 @author: willi
 """
 import pieces.common_pieces as cm
-
+from util.vector import Vector2f
 
 class DirectionalPiece(cm.Piece):
     """
@@ -23,22 +23,20 @@ class DirectionalPiece(cm.Piece):
         self.moves = []
         # to divide and move 1 case at once
         self.divisor = 8
-        for one_case in self.one_case_list:
+        for dir_angle in self.one_case_list:
             # The next case on which the piece will be
-            self.next = [self.position[0] + one_case[0], self.position[1] + one_case[1]]
+            self.next = Vector2f(self.position.x + dir_angle.x, self.position.y + dir_angle.y)
             self.index = 0
             while self.index != self.divisor:
                 # if the piece goes out of the board or if it is on another piece
                 # stop the loop
                 self.piece = board.piece_at_location(self.next)
                 if self.piece is not None and self.location_on_board(self.next):
-                    if self.piece.color == self.color:
-                        break
-                    else:
+                    if self.piece.color != self.color:
                         self.moves.append(self.next)
-                        break
+                    break
                 elif self.piece is None and self.location_on_board(self.next):
                     self.moves.append(self.next)
-                self.next = [self.next[0] + one_case[0], self.next[1] + one_case[1]]
+                self.next = Vector2f(self.next.x + dir_angle.x, self.next.y + dir_angle.y)
                 self.index += 1
         return self.moves

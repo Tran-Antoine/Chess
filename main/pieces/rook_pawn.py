@@ -4,7 +4,7 @@ The tower and the pawn.
 """
 import pieces.common_pieces as cp
 import pieces.move_bishop_queen_rook as bqr
-
+from util.vector import Vector2f
 
 class Pawn(cp.Piece):
     """
@@ -21,18 +21,13 @@ class Pawn(cp.Piece):
         How the piece moves.
         """
         self.moves = []
+        factor = 1 if self.color.color_name == 'white' else -1
         # When it is the first time the pawn moves, it can moves 2 cases
-        if self.color.color_name == "black" and board.piece_at_location([self.position[0], self.position[1] - 1]) is None:
-            self.moves.append([self.position[0], self.position[1] - 1])
-
-            if not self.alreadyMoved and board.piece_at_location([self.position[0], self.position[1] - 2]) is None:
-                self.moves.append([self.position[0], self.position[1] - 2])
-
-        elif self.color.color_name == "white" and board.piece_at_location([self.position[0], self.position[1] + 1]) is None:
-            self.moves.append([self.position[0], self.position[1] + 1])
-
-            if not self.alreadyMoved and board.piece_at_location([self.position[0], self.position[1] + 2]) is None:
-                self.moves.append([self.position[0], self.position[1] + 2])
+        if board.piece_at_location(Vector2f(self.position.x, self.position.y + factor)) is None:
+            self.moves.append(Vector2f(self.position.x, self.position.y + factor))
+            if not self.alreadyMoved and board.piece_at_location(Vector2f(self.position.x, self.position.y + 2*factor)) is None:
+                self.moves.append(Vector2f(self.position.x, self.position.y + 2*factor))
+                
         self.can_eat(board)
         return self.moves
 
@@ -50,11 +45,11 @@ class Pawn(cp.Piece):
         """
         self.can_go = []
         if self.color.color_name == "black":
-            self.diagonal_left = [self.position[0] - 1, self.position[1] - 1]
-            self.diagonal_right = [self.position[0] + 1, self.position[1] - 1]
+            self.diagonal_left = Vector2f(self.position.x - 1, self.position.y - 1)
+            self.diagonal_right = Vector2f(self.position.x + 1, self.position.y - 1)
         elif self.color.color_name == "white":
-            self.diagonal_left = [self.position[0] - 1, self.position[1] + 1]
-            self.diagonal_right = [self.position[0] + 1, self.position[1] + 1]
+            self.diagonal_left = Vector2f(self.position.x - 1, self.position.y + 1)
+            self.diagonal_right = Vector2f(self.position.x + 1, self.position.y + 1)
             
         self.can_go.append(board.piece_at_location(self.diagonal_left))
         self.can_go.append(board.piece_at_location(self.diagonal_right))
@@ -67,9 +62,9 @@ class Pawn(cp.Piece):
         """
         Transform the piece into another when it reaches the end of the board.
         """
-        if self.color.color_name == "white" and self.position[1] == 8:
+        if self.color.color_name == "white" and self.position.y == 8:
             print("TRANSFORMATION DES RENOIS!!!")
-        if self.color.color_name == "black" and self.position[1] == 8:
+        if self.color.color_name == "black" and self.position.y == 8:
             print("TRANSFORMATION DES COLONS!!!")
 
 class Rook(bqr.DirectionalPiece):
@@ -78,7 +73,7 @@ class Rook(bqr.DirectionalPiece):
     """
 
     def __init__(self, color, position):
-        self.one_case_list = [[0, 1], [0, -1], [1, 0], [-1, 0]]
+        self.one_case_list = [Vector2f(0, 1), Vector2f(0, -1), Vector2f(1, 0), Vector2f(-1, 0)]
         super().__init__(color, position, "rook")
         # To know whether it can make the castling
         self.can_castle = True

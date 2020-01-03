@@ -25,6 +25,9 @@ class ChessUpdatePacket():
         if initial in self.tile_modifications.keys():
             return self.tile_modifications[initial]
         return None # explicit return statement to clarify
+        
+    def __str__(self):
+        return self.tile_modifications.__str__()
 
 ChessUpdatePacket.STOP = ChessUpdatePacket({})
 

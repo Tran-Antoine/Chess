@@ -13,8 +13,8 @@ class GameLogic():
         if start is destination is None:
             return api.ChessUpdatePacket.STOP
             
-        piece = self.board.piece_at_location(start.tolist()) # todo, get rid of the tolist()
-        if (piece is not None) and destination.tolist() in piece.moves_available(self.board):
+        piece = self.board.piece_at_location(start) 
+        if (piece is not None) and destination in piece.moves_available(self.board):
             return self.board.process_move(start, destination)
         
         print("Invalid move, please try again")

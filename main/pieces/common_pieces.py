@@ -11,14 +11,11 @@ class Piece():
 
     def __init__(self, color, position, name):
         # To know the position of each pieces
-        self.position_letter = ["A", "B", "C", "D", "E", "F", "G", "H"]
+        self.position_letter = 'ABCDEFGH'
         self.position_number = [str(x + 1) for x in range(8)]
         self.position = position
         self.name = name
         self.color = color
-
-        # The image of the piece
-        self.image = None
 
 #        print(f"The {self}'s coordinates: {self.position_letter[self.position[0] - 1]}{self.position[1]}")
 
@@ -42,6 +39,6 @@ class Piece():
         """
         Verify if the position is on the board, i.e > 0 and < 8
         """
-        if 0 < loc[0] <= 8 and 0 < loc[1] <= 8:
+        if 0 < loc.x <= 8 and 0 < loc.y <= 8:
             return True
         return False

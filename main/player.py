@@ -6,7 +6,7 @@ File which creates the players.
 import pieces.king_queen as kq
 import pieces.knight_bishop as kb
 import pieces.rook_pawn as rp
-
+from util.vector import Vector2f
 
 class Player():
     """
@@ -27,12 +27,12 @@ class Player():
         self.pieces = []
         if self.color == self.color.WHITE:
             for index in range(8):
-                self.pieces.append(rp.Pawn(self.color, [index + 1, 2]))
-                self.pieces.append(self.pieces_order[index](self.color, [index + 1, 1]))
+                self.pieces.append(rp.Pawn(self.color, Vector2f(index + 1, 2)))
+                self.pieces.append(self.pieces_order[index](self.color, Vector2f(index + 1, 1)))
         else:
             for index in range(8):
-                self.pieces.append(rp.Pawn(self.color, [index + 1, 7]))
-                self.pieces.append(self.pieces_order[index](self.color, [index + 1, 8]))
+                self.pieces.append(rp.Pawn(self.color, Vector2f(index + 1, 7)))
+                self.pieces.append(self.pieces_order[index](self.color, Vector2f(index + 1, 8)))
 
                 
     def __str__(self):
