@@ -13,7 +13,7 @@ class ChessGame():
         self.render_board = board.ChessBoard(renderers.ConsoleRenderer())
         self.logic = gamelogic.GameLogic(player1, player2)
         self.imaginary_board = ImaginaryBoard(player1, player2)
- 
+        
     def start(self):
         print(f"Starting a new game, opposing {self.player1} with {self.player2}")
         self.render_board.show()

@@ -24,12 +24,13 @@ class ChessUpdatePacket():
         """
         if initial in self.tile_modifications.keys():
             return self.tile_modifications[initial]
-        return None # explicit return statement to clarify
+        return None # explicit yet not obligatory return statement to clarify
         
     def __str__(self):
         return self.tile_modifications.__str__()
 
 ChessUpdatePacket.STOP = ChessUpdatePacket({})
+
 
 class Renderable():
 
@@ -61,7 +62,7 @@ class Renderable():
         """
         Implementation of the render method for the TkinterRenderer (not created yet)
         """
-        raise NotImplementedError("Feature not implemented yet")
+        raise NotImplementedError()
     
     def update(self, packet: ChessUpdatePacket):
         """
