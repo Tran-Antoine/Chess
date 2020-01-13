@@ -3,6 +3,10 @@
 File which creates the players.
 """
 # todo : have the pieces module import work
+import pieces.king_queen as kq
+import pieces.knight_bishop as kb
+import pieces.rook_pawn as rp
+from util.vector import Vector2f
 
 class Player():
     """
@@ -12,10 +16,28 @@ class Player():
     def __init__(self, color, name):
         self.color = color
         self.name = name
+        self.set_piece()        
+
+    def set_piece(self):
+        """
+        Set the pieces on their location on the board
+        """
+        self.pieces_order = [rp.Rook, kb.Knight, kb.Bishop, kq.Queen,
+                             kq.King, kb.Bishop, kb.Knight, rp.Rook]
         self.pieces = []
-    
+        if self.color == self.color.WHITE:
+            for index in range(8):
+                self.pieces.append(rp.Pawn(self.color, Vector2f(index, 1)))
+                self.pieces.append(self.pieces_order[index](self.color, Vector2f(index, 0)))
+        else:
+            for index in range(8):
+                self.pieces.append(rp.Pawn(self.color, Vector2f(index, 6)))
+                self.pieces.append(self.pieces_order[index](self.color, Vector2f(index, 7)))
+
+                
     def __str__(self):
         return f"{self.name} (playing {self.color})"
+
 
 class Color():
     
@@ -24,7 +46,10 @@ class Color():
         
     def __str__(self):
         return self.color_name
-        
+
+    def __eq__(self, other):
+        return self.color_name == other.color_name
+
 
 # default constants
 Color.WHITE = Color("white")
