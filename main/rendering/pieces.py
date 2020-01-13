@@ -99,12 +99,12 @@ class RenderablePiece(api.Renderable):
             next = self.next_position
         real_next = self.convert_to_tkinter_coords(next)
         # there might be a better way of doing this
-        self.display_image.grid(column=real_next[0] + 1, row=real_next[1] + 1)
+        self.display_image.grid(column=real_next.x + 1, row=real_next.y + 1)
         self.position = next
         self.next_position = None
     
     def convert_to_tkinter_coords(self, coords):
-        return (coords[0], 7 - coords[1])
+        return vector.Vector2f(coords.x, 7 - coords.y)
         
     def load_display_image(self, renderer):
         root = renderer.thread.queue.get(timeout=1)

@@ -10,7 +10,7 @@ class ChessGame():
     def __init__(self, player1=Player.DEFAULT_1, player2=Player.DEFAULT_2):
         self.player1 = player1
         self.player2 = player2
-        self.render_board = board.ChessBoard(renderers.ConsoleRenderer())
+        self.render_board = board.ChessBoard(renderers.TkinterRenderer())
         self.logic = gamelogic.GameLogic(player1, player2)
         self.imaginary_board = ImaginaryBoard(player1, player2)
         
