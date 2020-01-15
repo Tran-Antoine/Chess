@@ -32,6 +32,7 @@ class ChessUpdatePacket():
 
 
 ChessUpdatePacket.STOP = ChessUpdatePacket({})
+ChessUpdatePacket.INVALID = ChessUpdatePacket({})
 
 
 class Renderable():

@@ -10,11 +10,11 @@ class Vector2f():
     def __sub__(self, other):
         return Vector2f(self.x - other.x, self.y - other.y)
         
-    def tolist(self):
-        return [self.x, self.y]
+    def __len__(self):
+        return (self.x ** 2 + self.y ** 2) ** 0.5
         
     def __eq__(self, other):
-        if other == None:
+        if other is None:
             return False
         return self.x == other.x and self.y == other.y
         
@@ -26,3 +26,11 @@ class Vector2f():
         
     def __repr__(self):
         return f'Vector2f({self.x}, {self.y})'
+
+    def normalize(self):
+        newx = 0 if self.x == 0 else self.x / abs(self.x)
+        newy = 0 if self.y == 0 else self.y / abs(self.y)
+        return Vector2f(newx, newy)
+
+    def scalar_mult(self, scalar):
+        return Vector2f(self.x * scalar, self.y * scalar)

@@ -2,11 +2,12 @@
 """
 File which creates the players.
 """
-# todo : have the pieces module import work
-import pieces.king_queen as kq
-import pieces.knight_bishop as kb
-import pieces.rook_pawn as rp
 from util.vector import Vector2f
+import pieces.directionalpieces as dp
+import pieces.king as king
+import pieces.knight as knight
+import pieces.pawn as pawn
+
 
 class Player():
     """
@@ -16,24 +17,24 @@ class Player():
     def __init__(self, color, name):
         self.color = color
         self.name = name
-        self.set_piece()        
+        self.pieces = self.load_pieces()
 
-    def set_piece(self):
+    def load_pieces(self):
         """
         Set the pieces on their location on the board
         """
-        self.pieces_order = [rp.Rook, kb.Knight, kb.Bishop, kq.Queen,
-                             kq.King, kb.Bishop, kb.Knight, rp.Rook]
-        self.pieces = []
+        pieces_order = [dp.Rook, knight.Knight, dp.Bishop, dp.Queen,
+                        king.King, dp.Bishop, knight.Knight, dp.Rook]
+        pieces = []
         if self.color == self.color.WHITE:
             for index in range(8):
-                self.pieces.append(rp.Pawn(self.color, Vector2f(index, 1)))
-                self.pieces.append(self.pieces_order[index](self.color, Vector2f(index, 0)))
+                pieces.append(pawn.Pawn(self.color, Vector2f(index, 1)))
+                pieces.append(pieces_order[index](self.color, Vector2f(index, 0)))
         else:
             for index in range(8):
-                self.pieces.append(rp.Pawn(self.color, Vector2f(index, 6)))
-                self.pieces.append(self.pieces_order[index](self.color, Vector2f(index, 7)))
-
+                pieces.append(pawn.Pawn(self.color, Vector2f(index, 6)))
+                pieces.append(pieces_order[index](self.color, Vector2f(index, 7)))
+        return pieces
                 
     def __str__(self):
         return f"{self.name} (playing {self.color})"

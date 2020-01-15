@@ -1,6 +1,7 @@
 import inputparser
 import util.vector as vector
 
+
 class ConsoleInputParser(inputparser.InputParser):
     
     def __init__(self):
