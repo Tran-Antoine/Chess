@@ -16,11 +16,11 @@ class ImaginaryBoard():
         self.pieces = self.load_pieces()
 
     def load_pieces(self):
-        self.pieces_loaded = []
+        pieces_loaded = []
         for player in self.players:
             for piece in player.pieces:
-                self.pieces_loaded.append(piece)
-        return self.pieces_loaded
+                pieces_loaded.append(piece)
+        return pieces_loaded
 
     def can_move_at_location(self, loc, color):
         """
@@ -42,30 +42,27 @@ class ImaginaryBoard():
         return None
 
     def get_rooks(self, color):
-        self.rooks = []
+        rooks = []
         for piece in self.pieces:
             if piece.name == "rook" and piece.color == color:
-                self.rooks.append(piece)
-        return self.rooks
+                rooks.append(piece)
+        return rooks
 
-    def castle(self, delta_x, next_pos, piece):
+    def castle(self, delta_x, king, tiles_modification):
         """
         Move the king and the rook, so they make a castle.
         """
-        if delta_x == 1:
-            pass
-        elif delta_x == 2:
-            piece.can_castle = False
-            for rook in self.get_rooks(piece.color):
-                if piece.position.x - rook.position.x == 4:
-                    self.tiles_modification[rook.position] = Vector2f(rook.position.x + 3, rook.position.y)
+        if delta_x == 2:
+            king.can_castle = False
+            for rook in self.get_rooks(king.color):
+                if king.position.x - rook.position.x == 4:
+                    tiles_modification[rook.position] = Vector2f(rook.position.x + 3, rook.position.y)
                     rook.can_castle = False
         elif delta_x == -2:
-            piece.can_castle = False
-            for rook in self.get_rooks(piece.color):
-                print(piece.position.x - rook.position.x)
-                if piece.position.x - rook.position.x == -3:
-                    self.tiles_modification[rook.position] = Vector2f(rook.position.x - 2, rook.position.y)
+            king.can_castle = False
+            for rook in self.get_rooks(king.color):
+                if king.position.x - rook.position.x == -3:
+                    tiles_modification[rook.position] = Vector2f(rook.position.x - 2, rook.position.y)
                     rook.can_castle = False
 
     def is_valid(self, former_position, next_position):
@@ -88,15 +85,23 @@ class ImaginaryBoard():
         """
         return the change on the board
         """
-        self.tiles_modification = {}
+        tiles_modification = {}
         if self.is_valid(former_position, next_position):
-            self.initial_vector = Vector2f(former_position.x, former_position.y)
-            self.tiles_modification[self.initial_vector] = next_position
+            initial_vector = Vector2f(former_position.x, former_position.y)
+            tiles_modification[initial_vector] = next_position
             for piece in self.pieces:
                 if piece.position == former_position and piece.name == "king":
-                    self.delta_x = piece.position.x - next_position.x
-                    self.castle(self.delta_x, next_position, piece)
+                    delta_x = piece.position.x - next_position.x
+                    self.castle(delta_x, piece, tiles_modification)
                 elif piece.position == next_position:
-                    self.tiles_modification[piece.position] = Vector2f(-1, -1)
-            self.move_players_pieces(self.tiles_modification)
-        return ChessUpdatePacket(self.tiles_modification)
+                    tiles_modification[piece.position] = Vector2f(-1, -1)
+            self.move_players_pieces(tiles_modification)
+        return ChessUpdatePacket(tiles_modification)
+
+    def location_on_board(self, loc):
+        """
+        Verify if the position is on the board, i.e > 0 and < 8
+        """
+        if 0 <= loc.x <= 7 and 0 <= loc.y <= 7:
+            return True
+        return False

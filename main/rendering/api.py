@@ -1,6 +1,7 @@
 from typing import List
 import rendering.renderers as renderers
 
+
 class ChessUpdatePacket():
     """
     A data class storing the modification of the chess board caused by
@@ -28,6 +29,7 @@ class ChessUpdatePacket():
         
     def __str__(self):
         return self.tile_modifications.__str__()
+
 
 ChessUpdatePacket.STOP = ChessUpdatePacket({})
 

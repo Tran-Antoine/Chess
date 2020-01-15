@@ -28,7 +28,6 @@ class Knight(cp.Piece):
                     if self.location_on_board(self.next_position):
                         self.moves.append(self.next_position)
 
-        print(self, self.moves)
         return self.moves
 
 

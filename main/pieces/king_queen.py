@@ -43,7 +43,6 @@ class King(cp.Piece):
             self.is_obstructing_castling(board, self.next_case)
             if self.distance_king_rook == 2:
                 self.moves.append(Vector2f(self.position.x + 2, self.position.y))
-                print("small castle")
 
         elif self.delta_x > 0:
             # Big castling
@@ -51,7 +50,6 @@ class King(cp.Piece):
             self.is_obstructing_castling(board, self.next_case)
             if self.distance_king_rook == 3:
                 self.moves.append(Vector2f(self.position.x - 2, self.position.y))
-                print("Big castle")
 
     def is_obstructing_castling(self, board, next_case):
         """

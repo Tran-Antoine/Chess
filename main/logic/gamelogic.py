@@ -10,13 +10,10 @@ class GameLogic():
         
     def play_turn(self) -> api.ChessUpdatePacket:
         start, destination = self.input_parser.wait_for_input()
-        print(start, destination)
         if start is destination is None:
             return api.ChessUpdatePacket.STOP
             
         piece = self.board.piece_at_location(start) 
-        print(piece)
-        print(piece.moves_available(self.board))
         if (piece is not None) and destination in piece.moves_available(self.board):
             return self.board.process_move(start, destination)
         
