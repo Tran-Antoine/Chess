@@ -1,8 +1,14 @@
-# -*- coding: utf-8 -*-
 """
-Main file to launch the game.
+Starting point of the program.
+It creates a ChessGame object, then starts the game from it.
 """
 from game import ChessGame
 
-chess_game = ChessGame()
-chess_game.start()
+
+def main():
+    chess_game = ChessGame()
+    chess_game.start()
+
+
+if __name__ == '__main__':
+    main()

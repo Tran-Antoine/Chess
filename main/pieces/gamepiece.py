@@ -38,8 +38,22 @@ class Piece():
         return movedata.MoveData(next_destination, changes)
 
     def moves_available(self, board) -> List[movedata.MoveData]:
+        """
+        Computes a list of moves (represented by the MoveData class),
+        corresponding to the available moves of the piece at the current
+        state of the game. This method must take into account the location
+        of the other pieces (for instance, a rook cannot go through a piece),
+        but also the general state of the game. For instance, if the king
+        is in check, the overall moves of the pieces are restricted: the next
+        move must protect the king.
+        """
         raise NotImplementedError()
 
     def moved(self):
+        """
+        Called once the piece is moved, regardless of the destination.
+        Several pieces might implement this method, such as the king,
+        which bans the 'castling' from his moves once he has moved once.
+        """
         pass
 

@@ -64,7 +64,7 @@ class ImaginaryBoard():
     @staticmethod
     def find_matching_move(destination: Vector2f, moves: List[MoveData]) -> Optional[MoveData]:
         """
-        Static util method returning one element from the list whose
+        Static util method returning one element from the list, whose
         destination matches the given one. If no element is suitable,
         returns None.
         """
