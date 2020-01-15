@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-The king and the queen.
-"""
 import pieces.gamepiece as gamepiece
 import pieces.directionalpieces as dirpieces
 import pieces.movedata as movedata
@@ -17,7 +13,7 @@ class King(gamepiece.Piece):
 
     def __init__(self, color, position):
         super().__init__(color, position, "king")
-        # To know whether it can make the castling or not.
+        # To know whether it can castle or not.
         self.can_castle = True
 
     def moves_available(self, board):
@@ -49,7 +45,5 @@ class King(gamepiece.Piece):
             }
             moves.append(movedata.MoveData(king_destination, changes))
 
-
-
-
-
+    def moved(self):
+        self.can_castle = False

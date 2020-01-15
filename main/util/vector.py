@@ -34,3 +34,6 @@ class Vector2f():
 
     def scalar_mult(self, scalar):
         return Vector2f(self.x * scalar, self.y * scalar)
+
+
+Vector2f.DESTROY = Vector2f(-1, -1)

@@ -29,3 +29,4 @@ class Knight(gamepiece.Piece):
                         moves.append(self.to_simple_move_data(next_position))
 
         return moves
+

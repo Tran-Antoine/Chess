@@ -63,7 +63,7 @@ class RenderablePiece(api.Renderable):
         if next == None:
             return False  
         # print(f"Next destination found : {next}")            
-        if next == vector.Vector2f(-1, -1):
+        if next == vector.Vector2f.DESTROY:
             self.destroyed = True
             return False
         self.next_position = next
