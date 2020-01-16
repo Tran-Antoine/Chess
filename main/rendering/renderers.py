@@ -102,10 +102,12 @@ class TkinterDisplay(threading.Thread):
         import tkinter
         root = tkinter.Tk()
         root.title("Chess")
+        # The icon of the root
         root.tk.call('wm', 'iconphoto', root._w, tkinter.PhotoImage(file='rendering/assets/icon.gif'))
         self.queue.put(root)
         root.mainloop()
-        
+
+
 class TkinterRenderer(ChessRenderer):
 
     def __init__(self):
@@ -119,4 +121,4 @@ class TkinterRenderer(ChessRenderer):
         print("Display successfully initialized")
 
     def render_call(self, renderable):
-        renderable.render_tkinter(self)
+        renderable.render_tkinter_with_frame(self)

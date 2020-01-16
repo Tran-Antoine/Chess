@@ -108,7 +108,7 @@ class Renderer():
     def render_call(self, renderable: Renderable):
         """
         Calls one of the render methods of the renderable. For instance, the ConsoleRenderer will call the render_console()
-        method, where as the TkinterRenderer will call the render_tkinter() method.
+        method, where as the TkinterRenderer will call the render_tkinter_with_frame() method.
         Unfortunately, python does not allow several methods to have the same name and parameter length, since object types
         are not explicitely mentionned.
         """
@@ -123,6 +123,6 @@ class Renderer():
         """
         for renderable in self.renderables:
             needs_update = renderable.update(packet)
-            if not renderable.destroyed and (force_update or needs_update):
+            if force_update or needs_update:
                 self.render_call(renderable)
         self.renderables = list(filter(lambda r: not r.destroyed, self.renderables))

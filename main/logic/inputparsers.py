@@ -1,6 +1,7 @@
 import inputparser
 import util.vector as vector
 
+
 class ConsoleInputParser(inputparser.InputParser):
     
     def __init__(self):
@@ -19,3 +20,9 @@ class ConsoleInputParser(inputparser.InputParser):
                 return None, None
             print("Invalid input, try again")
             return self.wait_for_input()
+
+
+class TkinterInputParser(inputparser.InputParser):
+
+    def __init__(self):
+        super().__init__()

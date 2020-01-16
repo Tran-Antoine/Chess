@@ -19,8 +19,8 @@ class RenderableBoard(api.Renderable):
             for j, tile in enumerate(row):
                 if tile == None:
                     renderer.rows[i][j] = renderers.ConsoleRenderer.EMPTY_TILE
-    
-    def render_tkinter(self, renderer):
+
+    def render_tkinter_with_frame(self, renderer):
         root = renderer.thread.queue.get(timeout=1)
         renderer.thread.queue.put(root)
         white = True
@@ -30,6 +30,7 @@ class RenderableBoard(api.Renderable):
                 tile.grid(row=i, column=j)
                 white = not white
             white = not white
+
 
 class RenderablePiece(api.Renderable):
     """
@@ -62,10 +63,9 @@ class RenderablePiece(api.Renderable):
         next = packet.new_destination(self.position)
         if next == None:
             return False  
-        # print(f"Next destination found : {next}")            
+#        print(f"Next destination found : {next}")            
         if next == vector.Vector2f(-1, -1):
             self.destroyed = True
-            return False
         self.next_position = next
         return True
         
@@ -88,15 +88,18 @@ class RenderablePiece(api.Renderable):
         self.position = self.next_position
         self.next_position = None
         
-    def render_tkinter(self, renderer):
-        if self.display_image == None:
+    def render_tkinter_with_frame(self, renderer):
+        if self.display_image is None:
             self.load_display_image(renderer)
-    
+
         next = None
-        if self.next_position == None:
+        if self.next_position is None:
             next = self.position
         else:
             next = self.next_position
+        print(next)
+        if next == vector.Vector2f(-1, -1):
+            self.display_image.grid()
         real_next = self.convert_to_tkinter_coords(next)
         # there might be a better way of doing this
         self.display_image.grid(column=real_next.x + 1, row=real_next.y + 1)
@@ -109,12 +112,12 @@ class RenderablePiece(api.Renderable):
     def load_display_image(self, renderer):
         root = renderer.thread.queue.get(timeout=1)
         renderer.thread.queue.put(root)
-        
+
         image = Image.open("rendering/assets/" + self.color + '/' + self.file_name())
         render = ImageTk.PhotoImage(image)
         self.display_image = tkinter.Label(master=root, image=render)
         self.display_image.image = render
-            
+
    
 class PawnRenderable(RenderablePiece):
 

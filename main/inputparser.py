@@ -16,4 +16,3 @@ class InputParser():
 
     def wait_for_input(self) -> List[vector.Vector2f]:
         raise NotImplementedError()
-        
