@@ -49,6 +49,16 @@ class Piece():
         """
         raise NotImplementedError()
 
+    def absolute_moves_available(self, board):
+        absolute_moves = []
+        moves = self.moves_available(board)
+        for move in moves:
+            changes = move.changes
+            valid = board.is_safe_for_king(self.color, changes)
+            if valid:
+                absolute_moves.append(move)
+        return absolute_moves
+
     def moved(self):
         """
         Called once the piece is moved, regardless of the destination.
@@ -56,4 +66,13 @@ class Piece():
         which bans the 'castling' from his moves once he has moved once.
         """
         pass
+
+    @staticmethod
+    def location_on_board(loc: vector.Vector2f):
+        """
+        Checks whether the position is on the board.
+        Coordinates are considered 'on the board' if both
+        their components are between 1 and 7 included.
+        """
+        return 0 <= loc.x <= 7 and 0 <= loc.y <= 7
 

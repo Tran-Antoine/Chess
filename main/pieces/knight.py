@@ -25,7 +25,7 @@ class Knight(gamepiece.Piece):
             for j in [-1, -2, 1, 2]:
                 next_position = Vector2f(self.position.x + i, self.position.y + j)
                 if abs(i) != abs(j) and board.can_move_at_location(next_position, self.color):
-                    if pieces_manager.ImaginaryBoard.location_on_board(next_position):
+                    if gamepiece.Piece.location_on_board(next_position):
                         moves.append(self.to_simple_move_data(next_position))
 
         return moves

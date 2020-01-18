@@ -1,6 +1,8 @@
 from rendering.api import ChessUpdatePacket
 from pieces.movedata import MoveData
 from pieces.gamepiece import Piece
+from pieces import pawn, knight, king
+from pieces import directionalpieces as dp
 from util.vector import Vector2f
 from typing import Tuple, List, Optional
 
@@ -18,21 +20,25 @@ class ImaginaryBoard():
     or not. If it is, based from the modifications list provided by the
     piece, the board will move every piece involved to their destination.
     """
-    def __init__(self, player1, player2):
-        self.players = player1, player2
+
+    PIECES_TYPE = [dp.Rook, knight.Knight, dp.Bishop, dp.Queen,
+                   king.King, dp.Bishop, knight.Knight, dp.Rook]
+
+    def __init__(self, *colors):
+        self.colors = colors
         self.pieces = self._load_pieces()
 
     def _load_pieces(self) -> List[Piece]:
         """
-        Loads the pieces from the players. Each player handles their own
-        pieces set. However, the board makes no distinction between
+        Loads the pieces. The board makes no distinction between
         the pieces, black and white ones are both put in a single list.
         """
-        pieces_loaded = []
-        for player in self.players:
-            for piece in player.pieces:
-                pieces_loaded.append(piece)
-        return pieces_loaded
+        pieces = []
+        for color, front_row_index, back_row_index in zip(self.colors, (1, 6), (0, 7)):
+            for x_index in range(8):
+                pieces.append(pawn.Pawn(color, Vector2f(x_index, front_row_index)))
+                pieces.append(ImaginaryBoard.PIECES_TYPE[x_index](color, Vector2f(x_index, back_row_index)))
+        return pieces
 
     def can_move_at_location(self, loc: Vector2f, color):
         """
@@ -54,12 +60,12 @@ class ImaginaryBoard():
                 return piece
         return None
 
-    def get_rooks(self, color):
-        rooks = []
+    def get_by_name(self, name, color=None):
+        pieces = []
         for piece in self.pieces:
-            if piece.name == "rook" and piece.color == color:
-                rooks.append(piece)
-        return rooks
+            if piece.name == name and (color is None or piece.color == color):
+                pieces.append(piece)
+        return pieces
 
     @staticmethod
     def find_matching_move(destination: Vector2f, moves: List[MoveData]) -> Optional[MoveData]:
@@ -73,7 +79,7 @@ class ImaginaryBoard():
                 return move
         return None
 
-    def process_move(self, former_position: Vector2f, next_position: Vector2f):
+    def process_move(self, former_position: Vector2f, next_position: Vector2f, color):
         """
         Analyses the requested move from the player, and
         depending on the result of the analysis, processes the required
@@ -87,18 +93,49 @@ class ImaginaryBoard():
         """
         target = self.piece_at_location(former_position)
 
-        if target is None:
+        if target is None or target.color != color:
             return ChessUpdatePacket.INVALID
 
-        moves_available = target.moves_available(self)
+        moves_available = target.absolute_moves_available(self)
         current_move = ImaginaryBoard.find_matching_move(next_position, moves_available)
 
         if current_move is None:  # meaning that the requested move was 'illegal'
             return ChessUpdatePacket.INVALID
 
         changes = current_move.changes
+
         self._move_pieces(changes)
         return ChessUpdatePacket(changes)
+
+    def is_safe_for_king(self, king_color, board_movements):
+        canceller = self._move_pieces(board_movements)
+        target_king, = self.get_by_name("king", king_color)
+        king_attacked = self.is_king_attacked(target_king)
+        self._cancel_move(canceller)
+        return not king_attacked
+
+    def is_king_attacked(self, target_king):
+        # all_destinations instead of all_absolute_destinations.
+        # for instance, the king cannot go to a "danger tile",
+        # EVEN if the attacking piece is "stuck" because it protects its king
+        # Besides, all_absolute_destination would cause a recursion error.
+        danger_tiles = self.all_destinations(target_king.color, color_inverted=True)
+        return target_king.position in danger_tiles
+
+    def all_destinations(self, color, color_inverted=False):
+        return self._all_destinations(color, color_inverted, lambda piece: piece.moves_available(self))
+
+    def all_absolute_destinations(self, color, color_inverted=False):
+        return self._all_destinations(color, color_inverted, lambda piece: piece.absolute_moves_available(self))
+
+    def _all_destinations(self, color, color_inverted, moves_func):
+        color_test = (lambda c: c == color) if not color_inverted else (lambda c: c != color)
+        destinations = []
+        for piece in self.pieces:
+            if not color_test(piece.color):
+                continue
+            destinations += list(map(lambda m: m.destination, moves_func(piece)))
+        return destinations
 
     def _move_pieces(self, changes):
         """
@@ -106,19 +143,18 @@ class ImaginaryBoard():
         This method is handled by the board itself, and should thus not
         be called from outside this class
         """
+        reverse = {}
         for piece in self.pieces:
             if piece.position in changes.keys():
                 piece.moved()
+                reverse[piece] = piece.position
                 piece.position = changes[piece.position]
+        return reverse
 
-    @staticmethod
-    def location_on_board(loc: Vector2f):
-        """
-        Checks whether the position is on the board.
-        Coordinates are considered 'on the board' if both
-        their components are between 1 and 7 included.
-        """
-        return 0 <= loc.x <= 7 and 0 <= loc.y <= 7
+    def _cancel_move(self, canceller):
+        for piece in self.pieces:
+            if piece in canceller.keys():
+                piece.position = canceller[piece]
 
     def analyse_path(self, start: Vector2f, end: Vector2f) -> Tuple[bool, Vector2f]:
         """
