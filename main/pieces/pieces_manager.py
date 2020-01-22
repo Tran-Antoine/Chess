@@ -143,7 +143,6 @@ class ImaginaryBoard():
         This method is handled by the board itself, and should thus not
         be called from outside this class
         """
-        print(changes)
         reverse = {}
         for piece in self.pieces:
             if piece.position in changes.keys():
