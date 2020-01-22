@@ -104,11 +104,11 @@ class ImaginaryBoard():
 
         changes = current_move.changes
 
-        self._move_pieces(changes)
+        self._move_pieces(changes, real_move=True)
         return ChessUpdatePacket(changes)
 
     def is_safe_for_king(self, king_color, board_movements):
-        canceller = self._move_pieces(board_movements)
+        canceller = self._move_pieces(board_movements, real_move=False)
         target_king, = self.get_by_name("king", king_color)
         king_attacked = self.is_king_attacked(target_king)
         self._cancel_move(canceller)
@@ -137,16 +137,18 @@ class ImaginaryBoard():
             destinations += list(map(lambda m: m.destination, moves_func(piece)))
         return destinations
 
-    def _move_pieces(self, changes):
+    def _move_pieces(self, changes, real_move=True):
         """
         Moves the pieces handled by the board according to the changes.
         This method is handled by the board itself, and should thus not
         be called from outside this class
         """
+        print(changes)
         reverse = {}
         for piece in self.pieces:
             if piece.position in changes.keys():
-                piece.moved()
+                if real_move:
+                    piece.moved()
                 reverse[piece] = piece.position
                 piece.position = changes[piece.position]
         return reverse
