@@ -5,15 +5,16 @@ import tkinter
 import threading
 from PIL import Image, ImageTk
 
+
 class RenderableBoard(api.Renderable):
 
     def __init__(self):
         super().__init__()
-        
+
     def update(self, packet: api.ChessUpdatePacket):
         # Board only need to be updated once, by the initial force update of the renderer
         return False
-    
+
     def render_console(self, renderer):
         for i, row in enumerate(renderer.rows):
             for j, tile in enumerate(row):
@@ -28,6 +29,20 @@ class RenderableBoard(api.Renderable):
             for j in range(1, 9):
                 tile = tkinter.Frame(master=root, bg=('#eccca1' if white else '#c78b57'), width=80, height=80)
                 tile.grid(row=i, column=j)
+                white = not white
+            white = not white
+
+    def render_tkinter_with_canvas(self, renderer):
+        root = renderer.thread.queue.get(timeout=1)
+        renderer.thread.queue.put(root)
+        SIZE = 800
+        canvas = tkinter.Canvas(master=root, height=SIZE, width=SIZE)
+        canvas.grid()
+        white = True
+        for i in range(1, 9):
+            for j in range(1, 9):
+                print("BONJOUR")
+                canvas.create_rectangle(SIZE/8*(i - 1), SIZE/8*(j - 1), SIZE/8*i, SIZE/8*j, fill=('#eccca1' if white else '#c78b57'))
                 white = not white
             white = not white
 
@@ -105,7 +120,11 @@ class RenderablePiece(api.Renderable):
         self.display_image.grid(column=real_next.x + 1, row=real_next.y + 1)
         self.position = next
         self.next_position = None
-    
+
+    def render_tkinter_with_canvas(self, renderer):
+        
+        raise NotImplementedError()
+
     def convert_to_tkinter_coords(self, coords):
         return vector.Vector2f(coords.x, 7 - coords.y)
         

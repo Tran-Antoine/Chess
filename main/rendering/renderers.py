@@ -109,16 +109,48 @@ class TkinterDisplay(threading.Thread):
 
 
 class TkinterRenderer(ChessRenderer):
-
     def __init__(self):
         super().__init__()
         self.thread = None
-    
+
     def initialize(self):
         self.thread = TkinterDisplay()
         self.thread.start()
         self.update(None, True)
         print("Display successfully initialized")
 
+
+class FrameTkinterRenderer(TkinterRenderer):
+
+    def __init__(self):
+        super().__init__()
+
     def render_call(self, renderable):
         renderable.render_tkinter_with_frame(self)
+
+
+class CanvasTkinterRenderer(TkinterRenderer):
+
+    def __init__(self):
+        super().__init__()
+
+    def render_call(self, renderable):
+        renderable.render_tkinter_with_canvas(self)
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        

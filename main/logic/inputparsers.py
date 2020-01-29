@@ -26,3 +26,6 @@ class TkinterInputParser(inputparser.InputParser):
 
     def __init__(self):
         super().__init__()
+
+    def wait_for_input(self):
+        pass
