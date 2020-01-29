@@ -97,15 +97,17 @@ class ImaginaryBoard():
             return ChessUpdatePacket.INVALID
 
         moves_available = target.absolute_moves_available(self)
+        print(moves_available)
         current_move = ImaginaryBoard.find_matching_move(next_position, moves_available)
 
         if current_move is None:  # meaning that the requested move was 'illegal'
             return ChessUpdatePacket.INVALID
 
         changes = current_move.changes
-
-        self._move_pieces(changes, real_move=True)
-        return ChessUpdatePacket(changes)
+        
+        # todo, convert the game piece to a renderable piece
+        new_piece = self._move_pieces(changes, real_move=True)
+        return ChessUpdatePacket(changes, new_piece)
 
     def is_safe_for_king(self, king_color, board_movements):
         canceller = self._move_pieces(board_movements, real_move=False)
@@ -141,15 +143,27 @@ class ImaginaryBoard():
         """
         Moves the pieces handled by the board according to the changes.
         This method is handled by the board itself, and should thus not
-        be called from outside this class
+        be called from outside this class.
+        Returns a dictionary that can be used to cancel the changes, in case
+        of a simulated movement
         """
+        additional_piece, creator = None, None
         reverse = {}
         for piece in self.pieces:
-            if piece.position in changes.keys():
-                if real_move:
-                    piece.moved()
-                reverse[piece] = piece.position
-                piece.position = changes[piece.position]
+            if piece.position not in changes.keys():
+                continue
+            if real_move:
+                result = piece.moved()
+                if result is not None:
+                    additional_piece, creator = piece.moved(), piece
+            reverse[piece] = piece.position
+            piece.position = changes[piece.position]
+                
+        if additional_piece is not None:
+            creator.position = Vector2f.DESTROY
+            self.pieces.append(additional_piece)
+        if real_move:
+            return reverse, additional_piece
         return reverse
 
     def _cancel_move(self, canceller):

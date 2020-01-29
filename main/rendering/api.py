@@ -9,14 +9,13 @@ class ChessUpdatePacket():
     """
     # tile_modifications links a position with a new position.
     # If new position is -1, -1, piece is destroyed
-    def __init__(self, tile_modifications, pieces_lost1=None, pieces_lost2=None):
+    def __init__(self, tile_modifications, new_piece=None):
         """
         Constructs a packet from a dictionnary linking initial positions to destinations.
-        Indications about piece losses are optional
         """
         self.tile_modifications = tile_modifications
-        self.pieces_lost1 = pieces_lost1
-        self.pieces_lost2 = pieces_lost2
+        self.new_piece = new_piece
+        
         
     def new_destination(self, initial):
         """

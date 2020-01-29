@@ -3,6 +3,7 @@
 The tower and the pawn.
 """
 import pieces.gamepiece as gamepiece
+import pieces.directionalpieces as dp
 from util.vector import Vector2f
 
 
@@ -23,16 +24,21 @@ class Pawn(gamepiece.Piece):
         How the piece moves.
         """
         moves = []
-        factor = 1 if self.color.color_name == 'white' else -1
-        # When it is the first time the pawn moves, it can moves 2 cases
-        if board.piece_at_location(Vector2f(self.position.x, self.position.y + factor)) is None:
-            moves.append(self.to_simple_move_data(Vector2f(self.position.x, self.position.y + factor)))
-            if not self.already_moved and board.piece_at_location(Vector2f(self.position.x, self.position.y + 2 * factor)) is None:
-                moves.append(self.to_simple_move_data(Vector2f(self.position.x, self.position.y + 2*factor)))
-                
+        self.add_regular_moves(board, moves)
         self.add_taking_moves(board, moves)
-        return moves
+        return list(map(lambda v: self.to_simple_move_data(v), moves))
+    
+    def add_regular_moves(self, board, moves):
+        direction = Vector2f(0, 1) if self.color.color_name == 'white' else Vector2f(0, -1)
+        self.add_if_empty(board, moves, self.position + direction)
+        # When it is the first time the pawn moves, it can moves 2 cases
+        if not self.already_moved:
+            self.add_if_empty(board, moves, self.position + direction.scalar_mult(2))
 
+    def add_if_empty(self, board, moves, destination):
+        if board.piece_at_location(destination) is None:
+            moves.append(destination)
+        
     def add_taking_moves(self, board, moves):
         """
         Verify if there is an adverse piece that can be taken.
@@ -48,7 +54,10 @@ class Pawn(gamepiece.Piece):
         for piece in can_go:
             if piece is not None:
                 if piece.color != self.color:
-                    moves.append(self.to_simple_move_data(piece.position))
+                    moves.append(piece.position)
 
     def moved(self):
         self.already_moved = True
+        # todo : give the user the choice for the piece
+        if self.position.y in (0, 7):
+            return dp.Queen(self.color, self.position)

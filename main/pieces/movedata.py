@@ -7,6 +7,9 @@ class MoveData():
     def __str__(self):
         return f'Destination : {self.destination}\n' \
                f'Changes : {self.changes}'
+    
+    def __repr__(self):
+        return f'{self.destination}, {self.changes}'
 
     def as_destination(self):  # used for method referencing
         return self.changes
