@@ -131,8 +131,12 @@ class FrameTkinterRenderer(TkinterRenderer):
 
 class CanvasTkinterRenderer(TkinterRenderer):
 
+    CANVAS_SIZE = 800
+
     def __init__(self):
         super().__init__()
+        self.canvas = None
+        self.list_images = []
 
     def render_call(self, renderable):
         renderable.render_tkinter_with_canvas(self)

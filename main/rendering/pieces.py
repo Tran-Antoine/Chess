@@ -4,6 +4,7 @@ import util.vector as vector
 import tkinter
 import threading
 from PIL import Image, ImageTk
+from tkinter import PhotoImage
 
 
 class RenderableBoard(api.Renderable):
@@ -35,16 +36,18 @@ class RenderableBoard(api.Renderable):
     def render_tkinter_with_canvas(self, renderer):
         root = renderer.thread.queue.get(timeout=1)
         renderer.thread.queue.put(root)
-        SIZE = 800
-        canvas = tkinter.Canvas(master=root, height=SIZE, width=SIZE)
-        canvas.grid()
+        renderer.canvas = tkinter.Canvas(master=root, height=renderer.CANVAS_SIZE, width=renderer.CANVAS_SIZE)
+        renderer.canvas.grid()
         white = True
         for i in range(1, 9):
             for j in range(1, 9):
-                print("BONJOUR")
-                canvas.create_rectangle(SIZE/8*(i - 1), SIZE/8*(j - 1), SIZE/8*i, SIZE/8*j, fill=('#eccca1' if white else '#c78b57'))
+                renderer.canvas.create_rectangle(renderer.CANVAS_SIZE/8*(i - 1), renderer.CANVAS_SIZE/8*(j - 1),
+                                                 renderer.CANVAS_SIZE/8*i, renderer.CANVAS_SIZE/8*j,
+                                                 fill=('#eccca1' if white else '#c78b57'))
                 white = not white
             white = not white
+        # position where the piece should be on the canvas
+        renderer.canvas.piece_position = vector.Vector2f(0, 7)
 
 
 class RenderablePiece(api.Renderable):
@@ -105,7 +108,7 @@ class RenderablePiece(api.Renderable):
         
     def render_tkinter_with_frame(self, renderer):
         if self.display_image is None:
-            self.load_display_image(renderer)
+            self.load_display_image_frame(renderer)
 
         next = None
         if self.next_position is None:
@@ -122,13 +125,47 @@ class RenderablePiece(api.Renderable):
         self.next_position = None
 
     def render_tkinter_with_canvas(self, renderer):
-        
-        raise NotImplementedError()
+        if self.display_image is not None:
+            next = None
+            if self.next_position is None:
+                next = self.position
+            else:
+                next = self.next_position
+            real_next = self.convert_to_canvas_coords(renderer, next)
+            position_in_canvas_coords = self.convert_to_canvas_coords(renderer, self.position)
+            renderer.canvas.move(self.display_image, -(position_in_canvas_coords.x - real_next.x),
+                                 -(position_in_canvas_coords.y - real_next.y))
+            self.position = next
+            self.next_position = None
+        else:
+            self.load_display_image_canvas(renderer)
+
+
+    def convert_to_canvas_coords(self, renderer, coords):
+        return vector.Vector2f(renderer.CANVAS_SIZE/16 + renderer.CANVAS_SIZE/8 * coords.x,
+                               (renderer.CANVAS_SIZE - renderer.CANVAS_SIZE/16) - renderer.CANVAS_SIZE/8*coords.y)
 
     def convert_to_tkinter_coords(self, coords):
         return vector.Vector2f(coords.x, 7 - coords.y)
-        
-    def load_display_image(self, renderer):
+
+    def load_display_image_canvas(self, renderer):
+        """Initialize the images when the program is run"""
+        root = renderer.thread.queue.get(timeout=1)
+        renderer.thread.queue.put(root)
+        image = Image.open("rendering/assets/" + self.color + '/' + self.file_name())
+        renderer.canvas.image = ImageTk.PhotoImage(image)
+        self.display_image = renderer.canvas.create_image(renderer.CANVAS_SIZE/16 + renderer.CANVAS_SIZE/8*renderer.canvas.piece_position.x,
+                                                          renderer.CANVAS_SIZE/16 + renderer.CANVAS_SIZE/8*renderer.canvas.piece_position.y,
+                                                          image=renderer.canvas.image)
+        if renderer.canvas.piece_position.x != vector.Vector2f(7, 0).x:
+            renderer.canvas.piece_position = vector.Vector2f(renderer.canvas.piece_position.x + 1, renderer.canvas.piece_position.y)
+        elif renderer.canvas.piece_position == vector.Vector2f(7, 6):
+            renderer.canvas.piece_position = vector.Vector2f(0, 1)
+        else:
+            renderer.canvas.piece_position = vector.Vector2f(0, renderer.canvas.piece_position.y - 1)
+        renderer.list_images.append(renderer.canvas.image)
+
+    def load_display_image_frame(self, renderer):
         root = renderer.thread.queue.get(timeout=1)
         renderer.thread.queue.put(root)
 
@@ -137,7 +174,6 @@ class RenderablePiece(api.Renderable):
         self.display_image = tkinter.Label(master=root, image=render)
         self.display_image.image = render
 
-   
 class PawnRenderable(RenderablePiece):
 
     def __init__(self, initial_position, color):
