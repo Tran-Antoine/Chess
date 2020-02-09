@@ -4,7 +4,6 @@ import util.vector as vector
 import tkinter
 import threading
 from PIL import Image, ImageTk
-from tkinter import PhotoImage
 
 
 class RenderableBoard(api.Renderable):
@@ -34,12 +33,20 @@ class RenderableBoard(api.Renderable):
             white = not white
 
     def render_tkinter_with_canvas(self, renderer):
+        """
+        Create the graphical interface with the chessboard and the number 1-8 and A-H.
+        """
         root = renderer.thread.queue.get(timeout=1)
         renderer.thread.queue.put(root)
+        LETTER_LIST = ["A", "B", "C", "D", "E", "F", "G", "H"]
         renderer.canvas = tkinter.Canvas(master=root, height=renderer.CANVAS_SIZE, width=renderer.CANVAS_SIZE)
-        renderer.canvas.grid()
+        renderer.canvas.grid(row=1, column=2, rowspan=8, columnspan=8)
         white = True
         for i in range(1, 9):
+            label_y = tkinter.Label(master=root, text=9 - i, height=5, width=5, font=30)
+            label_y.grid(row=i, column=1)
+            label_x = tkinter.Label(master=root, text=LETTER_LIST[i - 1], height=5, width=5, font=30)
+            label_x.grid(row=9, column=i + 1)
             for j in range(1, 9):
                 renderer.canvas.create_rectangle(renderer.CANVAS_SIZE/8*(i - 1), renderer.CANVAS_SIZE/8*(j - 1),
                                                  renderer.CANVAS_SIZE/8*i, renderer.CANVAS_SIZE/8*j,

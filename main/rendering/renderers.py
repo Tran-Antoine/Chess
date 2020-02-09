@@ -3,6 +3,7 @@ import rendering.pieces as pieces
 from util.vector import Vector2f
 import threading, queue
 
+
 def initial_row(row, color):
     """
     Used to retrieve a list of renderable pieces according to their initial row.
@@ -140,21 +141,3 @@ class CanvasTkinterRenderer(TkinterRenderer):
 
     def render_call(self, renderable):
         renderable.render_tkinter_with_canvas(self)
-
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
