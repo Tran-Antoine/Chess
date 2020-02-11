@@ -28,33 +28,39 @@ class TkinterInputParser(inputparser.InputParser):
     def __init__(self, renderer):
         super().__init__()
         self.renderer = renderer
-        self.piece_on_tile = None
+        self.piece_on_tile_chosen = None
         self.wait = True
         self.initial_position = None
         self.final_position = None
+        self.continue_game = True
 
     def wait_for_input(self):
         self.wait = True
-
-        self.renderer.canvas.bind("<ButtonPress>", self.click_position)
-        print(self.renderer.canvas.master)
+        self.renderer.canvas.master.bind("<Control-q>", lambda _: self.stop_game())
+        self.renderer.canvas.bind("<ButtonPress>", self.get_piece_by_mouse_position)
         # So the program waits for a proper input
         answer = 0
         while answer != 1:
             time.sleep(0.1)
             answer = self.still_wait()
+            if answer == 2:
+                return None, None
 
-        self.renderer.canvas.move(self.piece_on_tile, self.initial_position[0] - self.final_position[0],
+        # Put the piece at his initial position, in case the move is invalid
+        self.renderer.canvas.move(self.piece_on_tile_chosen, self.initial_position[0] - self.final_position[0],
                                   self.initial_position[1] - self.final_position[1])
 
         real_initial_position = self.convert_to_chess_coords(self.initial_position)
         real_final_position = self.convert_to_chess_coords(self.final_position)
-        return (real_initial_position, real_final_position)
+        return real_initial_position, real_final_position
 
     def convert_to_chess_coords(self, position):
+        position_x = -50
+        position_y = -50
         for i in range(8):
             if self.renderer.CANVAS_SIZE/8 * i <= position[0] < self.renderer.CANVAS_SIZE/8 * (i + 1):
                 position_x = i
+
             if self.renderer.CANVAS_SIZE/8 * i <= position[1] < self.renderer.CANVAS_SIZE/8 * (i + 1):
                 position_y = 7 - i
         return vector.Vector2f(position_x, position_y)
@@ -65,31 +71,43 @@ class TkinterInputParser(inputparser.InputParser):
         """
         if not self.wait:
             return 1
+        if not self.continue_game:
+            return 2
         return 0
 
-    def click_position(self, event):
-        print(event.x, event.y)
+    def stop_game(self):
+        self.renderer.canvas.master.destroy()
+        self.continue_game = False
+
+    def get_piece_by_mouse_position(self, event):
         for position in self.renderer.cases_position:
+            # To know in which tile the mouse is.
             if position[0] < event.x < position[2] and position[1] < event.y < position[3]:
+                # To know whether there are 2 objects on the canvas --> if there are 2, it means that
+                # there is a piece on the tile.
                 widgets_at_position = self.renderer.canvas.find_overlapping(position[0] + 1,
                                                                             position[1] + 1,
                                                                             position[2] - 1,
                                                                             position[3] - 1)
-                self.piece_on_tile = widgets_at_position[-1] if len(widgets_at_position) == 2 else None
+                self.piece_on_tile_chosen = widgets_at_position[-1] if len(widgets_at_position) == 2 else None
                 break
-        if self.piece_on_tile is not None:
-            self.initial_position = self.renderer.canvas.coords(self.piece_on_tile)
-            self.renderer.canvas.bind("<Motion>", self.canvas_move)
-            self.renderer.canvas.bind("<ButtonRelease>", self.click_release)
 
-    def canvas_move(self, event):
-        piece_coords = self.renderer.canvas.coords(self.piece_on_tile)
-        self.renderer.canvas.move(self.piece_on_tile, event.x - piece_coords[0] - 20, event.y - piece_coords[1] - 20)
+        if self.piece_on_tile_chosen is not None:
+            self.initial_position = self.renderer.canvas.coords(self.piece_on_tile_chosen)
+            self.renderer.canvas.bind("<Motion>", self.move_piece_with_mouse)
+            self.renderer.canvas.bind("<ButtonRelease>", self.release_piece_at_mouse_position)
 
-    def click_release(self, event):
+    def move_piece_with_mouse(self, event):
+        """
+        When the piece is selected and the user moves the mouse, it moves the piece.
+        """
+        piece_coords = self.renderer.canvas.coords(self.piece_on_tile_chosen)
+        self.renderer.canvas.move(self.piece_on_tile_chosen, event.x - piece_coords[0], event.y - piece_coords[1])
+
+    def release_piece_at_mouse_position(self, event):
         self.renderer.canvas.unbind("<ButtonPress>")
         self.renderer.canvas.unbind("<ButtonRelease>")
         self.renderer.canvas.unbind("<Motion>")
 
-        self.final_position = self.renderer.canvas.coords(self.piece_on_tile)
+        self.final_position = self.renderer.canvas.coords(self.piece_on_tile_chosen)
         self.wait = False

@@ -23,6 +23,7 @@ class ChessGame():
     def start(self):
         print(f"Starting a new game, opposing {self.player1} with {self.player2}")
         self.render_board.show()
+
         while True:
             packet = self.logic.play_turn()
             # Usage of 'is' instead of '=='. We want to check
