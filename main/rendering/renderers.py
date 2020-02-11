@@ -137,7 +137,9 @@ class CanvasTkinterRenderer(TkinterRenderer):
     def __init__(self):
         super().__init__()
         self.canvas = None
+        # To keep a reference and display the pieces
         self.list_images = []
+        self.cases_position = []
 
     def render_call(self, renderable):
         renderable.render_tkinter_with_canvas(self)

@@ -43,18 +43,24 @@ class RenderableBoard(api.Renderable):
         renderer.canvas.grid(row=1, column=2, rowspan=8, columnspan=8)
         white = True
         for i in range(1, 9):
-            label_y = tkinter.Label(master=root, text=9 - i, height=5, width=5, font=30)
-            label_y.grid(row=i, column=1)
-            label_x = tkinter.Label(master=root, text=LETTER_LIST[i - 1], height=5, width=5, font=30)
-            label_x.grid(row=9, column=i + 1)
+            self.display_labels(root, LETTER_LIST, i)
             for j in range(1, 9):
                 renderer.canvas.create_rectangle(renderer.CANVAS_SIZE/8*(i - 1), renderer.CANVAS_SIZE/8*(j - 1),
                                                  renderer.CANVAS_SIZE/8*i, renderer.CANVAS_SIZE/8*j,
                                                  fill=('#eccca1' if white else '#c78b57'))
+                renderer.cases_position.append((renderer.CANVAS_SIZE/8*(i - 1), renderer.CANVAS_SIZE/8*(j - 1),
+                                                renderer.CANVAS_SIZE/8*i, renderer.CANVAS_SIZE/8*j,))
+
                 white = not white
             white = not white
-        # position where the piece should be on the canvas
+        # position where the first piece should be on the canvas
         renderer.canvas.piece_position = vector.Vector2f(0, 7)
+
+    def display_labels(self, root, letter_list, index):
+        label_y = tkinter.Label(master=root, text=9 - index, height=5, width=5, font=30)
+        label_y.grid(row=index, column=1)
+        label_x = tkinter.Label(master=root, text=letter_list[index - 1], height=5, width=5, font=30)
+        label_x.grid(row=9, column=index + 1)
 
 
 class RenderablePiece(api.Renderable):
@@ -170,6 +176,7 @@ class RenderablePiece(api.Renderable):
             renderer.canvas.piece_position = vector.Vector2f(0, 1)
         else:
             renderer.canvas.piece_position = vector.Vector2f(0, renderer.canvas.piece_position.y - 1)
+        # To keep a reference and to be able to display the next images
         renderer.list_images.append(renderer.canvas.image)
 
     def load_display_image_frame(self, renderer):

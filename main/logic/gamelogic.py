@@ -4,8 +4,14 @@ import rendering.api as api
 
 class GameLogic():
 
-    def __init__(self, player1, player2):
-        self.input_parser = inputparsers.ConsoleInputParser()
+    CONTROL_INPUT = [inputparsers.ConsoleInputParser, inputparsers.ConsoleInputParser, inputparsers.TkinterInputParser]
+
+    def __init__(self, player1, player2, parser_number, renderer):
+        try:
+            self.input_parser = self.CONTROL_INPUT[parser_number - 1]()
+        except TypeError:
+            self.input_parser = inputparsers.TkinterInputParser(renderer)
+
         self.board = pieces_manager.ImaginaryBoard(player1, player2)
         
     def play_turn(self) -> api.ChessUpdatePacket:
