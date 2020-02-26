@@ -20,3 +20,7 @@ class ConsoleInputParser(inputparser.InputParser):
                 return None, None
             print("Invalid input, try again")
             return self.wait_for_input()
+            
+    
+    def wait_for_extra_piece(self):
+        return input("Entrez l'ID de la pièce: ")

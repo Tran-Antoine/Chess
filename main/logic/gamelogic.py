@@ -2,7 +2,7 @@ import logic.inputparsers as inputparsers
 import pieces.pieces_manager as pieces_manager
 import rendering.api as api
 import player
-
+from typing import Tuple
 
 class GameLogic():
 
@@ -14,18 +14,22 @@ class GameLogic():
         self.winner = None
         self.ended = False
         
-    def play_turn(self) -> api.ChessUpdatePacket:
+    def play_turn(self) -> Tuple[api.ChessUpdatePacket, bool]:
         start, destination = self.input_parser.wait_for_input()
         if start is destination is None:
-            return api.ChessUpdatePacket.STOP
+            return api.ChessUpdatePacket.STOP, False
 
-        packet = self.board.process_move(start, destination, self.p1.color)
+        packet, extra_piece_required = self.board.process_move(start, destination, self.p1.color)
         if packet is not api.ChessUpdatePacket.INVALID:
             self.ended = self.is_ended(self.p1, self.p2)
             self.p1, self.p2 = self.p2, self.p1
-            return packet
+            return packet, extra_piece_required
         print("Invalid move, please try again")
         return self.play_turn()
+        
+    def add_extra_piece(self):
+        input_result = self.input_parser.wait_for_extra_piece()
+        return self.board.add_extra_piece(input_result)
 
     def is_ended(self, attacker: player.Player, target: player.Player):
         king, = self.board.get_by_name("king", target.color)

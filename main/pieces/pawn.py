@@ -59,5 +59,4 @@ class Pawn(gamepiece.Piece):
     def moved(self):
         self.already_moved = True
         # todo : give the user the choice for the piece
-        if self.position.y in (0, 7):
-            return dp.Queen(self.color, self.position)
+        return self.position.y in (0, 4)

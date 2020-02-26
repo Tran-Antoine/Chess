@@ -23,10 +23,14 @@ class ImaginaryBoard():
 
     PIECES_TYPE = [dp.Rook, knight.Knight, dp.Bishop, dp.Queen,
                    king.King, dp.Bishop, knight.Knight, dp.Rook]
+    
+    ID_MAP = {id:piece for id, piece in zip(("R", "Kn", "B", "Q", "Ki", "P"), PIECES_TYPE + [pawn.Pawn])}
 
     def __init__(self, *colors):
         self.colors = colors
         self.pieces = self._load_pieces()
+        self.pending_todelete_pawn = None
+        self.pending_color = None
 
     def _load_pieces(self) -> List[Piece]:
         """
@@ -94,20 +98,19 @@ class ImaginaryBoard():
         target = self.piece_at_location(former_position)
 
         if target is None or target.color != color:
-            return ChessUpdatePacket.INVALID
+            return ChessUpdatePacket.INVALID, False
 
         moves_available = target.absolute_moves_available(self)
-        print(moves_available)
         current_move = ImaginaryBoard.find_matching_move(next_position, moves_available)
 
         if current_move is None:  # meaning that the requested move was 'illegal'
-            return ChessUpdatePacket.INVALID
+            return ChessUpdatePacket.INVALID, False
 
         changes = current_move.changes
         
-        # todo, convert the game piece to a renderable piece
-        new_piece = self._move_pieces(changes, real_move=True)
-        return ChessUpdatePacket(changes, new_piece)
+        _, requires_extra_piece = self._move_pieces(changes, real_move=True)
+        print(requires_extra_piece)
+        return ChessUpdatePacket(changes), requires_extra_piece
 
     def is_safe_for_king(self, king_color, board_movements):
         canceller = self._move_pieces(board_movements, real_move=False)
@@ -147,24 +150,37 @@ class ImaginaryBoard():
         Returns a dictionary that can be used to cancel the changes, in case
         of a simulated movement
         """
-        additional_piece, creator = None, None
+        extra_piece_required = False
         reverse = {}
         for piece in self.pieces:
             if piece.position not in changes.keys():
                 continue
-            if real_move:
-                result = piece.moved()
-                if result is not None:
-                    additional_piece, creator = piece.moved(), piece
+            
             reverse[piece] = piece.position
             piece.position = changes[piece.position]
+            
+            if real_move:
+                result = piece.moved()
+                if (result is not None) and result:
+                    extra_piece_required = result
+                    self.pending_todelete_pawn = piece
                 
-        if additional_piece is not None:
-            creator.position = Vector2f.DESTROY
-            self.pieces.append(additional_piece)
         if real_move:
-            return reverse, additional_piece
+            return reverse, extra_piece_required
         return reverse
+    
+    def add_extra_piece(self, id):
+        assert self.pending_todelete_pawn is not None
+        
+        new_piece = ID_MAP[id](self.pending_todelete_pawn.color, self.pending_todelete_pawn.position)
+        pawn = self.pending_todelete_pawn
+        changes = {pawn.position, Vector2f.DESTROY}
+        
+        pawn.position = Vector2f.DESTROY
+        self.pieces.append(new_piece)
+        self.pending_todelete_pawn = None
+        
+        return ChessPacket(changes, new_piece=new_piece)  # todo, convert the game piece to a renderable piece
 
     def _cancel_move(self, canceller):
         for piece in self.pieces:
