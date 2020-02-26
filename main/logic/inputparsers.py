@@ -1,6 +1,6 @@
 import inputparser
 import util.vector as vector
-import time
+import threading
 
 
 class ConsoleInputParser(inputparser.InputParser):
@@ -29,23 +29,23 @@ class TkinterInputParser(inputparser.InputParser):
         super().__init__()
         self.renderer = renderer
         self.piece_on_tile_chosen = None
-        self.wait = True
         self.initial_position = None
         self.final_position = None
         self.continue_game = True
 
-    def wait_for_input(self):
-        self.wait = True
+        # Bind the button to quit the app and to move the pieces
         self.renderer.canvas.master.bind("<Control-q>", lambda _: self.stop_game())
         self.renderer.canvas.bind("<ButtonPress>", self.get_piece_by_mouse_position)
-        # So the program waits for a proper input
-        answer = 0
-        while answer != 1:
-            time.sleep(0.1)
-            answer = self.still_wait()
-            if answer == 2:
-                return None, None
+        lock = threading.Lock()
+        self.wait_for_canvas_input = threading.Condition(lock)
+        lock.acquire()
 
+    def wait_for_input(self):
+        self.wait = True
+        # So the program waits for a proper input
+        self.wait_for_canvas_input.acquire()
+        if not self.continue_game:
+            return None, None
         # Put the piece at his initial position, in case the move is invalid
         self.renderer.canvas.move(self.piece_on_tile_chosen, self.initial_position[0] - self.final_position[0],
                                   self.initial_position[1] - self.final_position[1])
@@ -65,19 +65,10 @@ class TkinterInputParser(inputparser.InputParser):
                 position_y = 7 - i
         return vector.Vector2f(position_x, position_y)
 
-    def still_wait(self):
-        """
-        Verify if a piece has been moved, so the program can proceed to the next step.
-        """
-        if not self.wait:
-            return 1
-        if not self.continue_game:
-            return 2
-        return 0
-
     def stop_game(self):
-        self.renderer.canvas.master.destroy()
+        self.wait_for_canvas_input.release()
         self.continue_game = False
+        self.renderer.canvas.master.destroy()
 
     def get_piece_by_mouse_position(self, event):
         for position in self.renderer.cases_position:
@@ -105,9 +96,8 @@ class TkinterInputParser(inputparser.InputParser):
         self.renderer.canvas.move(self.piece_on_tile_chosen, event.x - piece_coords[0], event.y - piece_coords[1])
 
     def release_piece_at_mouse_position(self, event):
-        self.renderer.canvas.unbind("<ButtonPress>")
         self.renderer.canvas.unbind("<ButtonRelease>")
         self.renderer.canvas.unbind("<Motion>")
 
         self.final_position = self.renderer.canvas.coords(self.piece_on_tile_chosen)
-        self.wait = False
+        self.wait_for_canvas_input.release()

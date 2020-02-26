@@ -57,10 +57,14 @@ class RenderableBoard(api.Renderable):
         renderer.canvas.piece_position = vector.Vector2f(0, 7)
 
     def display_labels(self, root, letter_list, index):
-        label_y = tkinter.Label(master=root, text=9 - index, height=5, width=5, font=30)
+        label_y = tkinter.Label(master=root, text=f" {9 - index} ", font=("Courrier", 15))
         label_y.grid(row=index, column=1)
-        label_x = tkinter.Label(master=root, text=letter_list[index - 1], height=5, width=5, font=30)
-        label_x.grid(row=9, column=index + 1)
+        label_x = tkinter.Label(master=root, text=letter_list[index - 1], font=("Courrier", 13))
+        label_x.grid(row=10, column=index + 1)
+        label_y_right = tkinter.Label(master=root, text="      ")
+        label_y_right.grid(row=index, column=10)
+        label_x_right = tkinter.Label(master=root, text="      ")
+        label_x_right.grid(row=0, column=index)
 
 
 class RenderablePiece(api.Renderable):
