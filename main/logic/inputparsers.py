@@ -1,6 +1,7 @@
 import inputparser
 import util.vector as vector
 import threading
+import tkinter
 
 
 class ConsoleInputParser(inputparser.InputParser):
@@ -39,6 +40,8 @@ class TkinterInputParser(inputparser.InputParser):
         lock = threading.Lock()
         self.wait_for_canvas_input = threading.Condition(lock)
         lock.acquire()
+
+        self.renderer.menu.add_cascade(label="quit", command=self.stop_game)
 
     def wait_for_input(self):
         self.wait = True

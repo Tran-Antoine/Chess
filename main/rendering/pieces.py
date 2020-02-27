@@ -38,6 +38,7 @@ class RenderableBoard(api.Renderable):
         """
         root = renderer.thread.queue.get(timeout=1)
         renderer.thread.queue.put(root)
+        self.create_menu(root, renderer)
         LETTER_LIST = ["A", "B", "C", "D", "E", "F", "G", "H"]
         renderer.canvas = tkinter.Canvas(master=root, height=renderer.CANVAS_SIZE, width=renderer.CANVAS_SIZE)
         renderer.canvas.grid(row=1, column=2, rowspan=8, columnspan=8)
@@ -55,6 +56,12 @@ class RenderableBoard(api.Renderable):
             white = not white
         # position where the first piece should be on the canvas
         renderer.canvas.piece_position = vector.Vector2f(0, 7)
+
+    def create_menu(self, master, renderer):
+        """The menus will be added from other classes such as logic.inputparsers.py"""
+        renderer.menu = tkinter.Menu(master)
+        # renderer.menu.add_command(label="quit")
+        master.config(menu=renderer.menu)
 
     def display_labels(self, root, letter_list, index):
         label_y = tkinter.Label(master=root, text=f" {9 - index} ", font=("Courrier", 15))
