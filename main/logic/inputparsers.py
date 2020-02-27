@@ -58,8 +58,6 @@ class TkinterInputParser(inputparser.InputParser):
         return real_initial_position, real_final_position
 
     def convert_to_chess_coords(self, position):
-        position_x = -50
-        position_y = -50
         for i in range(8):
             if self.renderer.CANVAS_SIZE/8 * i <= position[0] < self.renderer.CANVAS_SIZE/8 * (i + 1):
                 position_x = i
