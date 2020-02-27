@@ -89,7 +89,7 @@ class TkinterInputParser(inputparser.InputParser):
         if self.piece_on_tile_chosen is not None:
             self.initial_position = self.renderer.canvas.coords(self.piece_on_tile_chosen)
             self.renderer.canvas.bind("<Motion>", self.move_piece_with_mouse)
-            self.renderer.canvas.bind("<ButtonRelease>", self.release_piece_at_mouse_position)
+            self.renderer.canvas.bind("<ButtonRelease>", lambda _: self.release_piece_at_mouse_position())
 
     def move_piece_with_mouse(self, event):
         """
@@ -98,7 +98,7 @@ class TkinterInputParser(inputparser.InputParser):
         piece_coords = self.renderer.canvas.coords(self.piece_on_tile_chosen)
         self.renderer.canvas.move(self.piece_on_tile_chosen, event.x - piece_coords[0], event.y - piece_coords[1])
 
-    def release_piece_at_mouse_position(self, event):
+    def release_piece_at_mouse_position(self):
         self.renderer.canvas.unbind("<ButtonRelease>")
         self.renderer.canvas.unbind("<Motion>")
 
