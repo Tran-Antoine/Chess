@@ -42,6 +42,7 @@ class ChessRenderer(api.Renderer):
         # The order in which the renderables are placed in the list doesn't matter at all
         return [pieces.RenderableBoard()] + white_row_back + white_row_front + black_row_front + black_row_back
 
+
 class ConsoleRenderer(ChessRenderer):
     """
     An implementation of the Renderer class for playing in the console.
@@ -55,7 +56,7 @@ class ConsoleRenderer(ChessRenderer):
         Constructs a ConsoleRenderer, initializing the grid with empty tiles
         """
         super().__init__()
-        self.rows = [[None for _ in range(8)] for _ in range(8)] # init 'null' grid
+        self.rows = [[None for _ in range(8)] for _ in range(8)]  # init 'null' grid
         
     def initialize(self):
         """
@@ -90,8 +91,10 @@ class ConsoleRenderer(ChessRenderer):
                 print(char + (4 * ' '), end='')
             print('\n')
 
+
 # Constant for the ConsoleRenderer class
 ConsoleRenderer.EMPTY_TILE = '- '
+
 
 class TkinterDisplay(threading.Thread):
 
@@ -105,7 +108,7 @@ class TkinterDisplay(threading.Thread):
         root = tkinter.Tk()
         root.title("Chess")
         # The icon of the root
-        root.tk.call('wm', 'iconphoto', root._w, tkinter.PhotoImage(file='rendering/assets/icon.gif'))
+        # root.tk.call('wm', 'iconphoto', root._w, tkinter.PhotoImage(file='rendering/assets/icon.gif'))
         # The width/height and position of the root only for the canvas
         if self.is_canvas:
             root.geometry("860x875+100+100")
@@ -114,6 +117,7 @@ class TkinterDisplay(threading.Thread):
 
 
 class TkinterRenderer(ChessRenderer):
+
     def __init__(self, is_canvas):
         super().__init__()
         self.thread = None
