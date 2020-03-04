@@ -39,7 +39,7 @@ class RenderableBoard(api.Renderable):
         root = renderer.thread.queue.get(timeout=1)
         renderer.thread.queue.put(root)
         self.create_menu(root, renderer)
-        LETTER_LIST = ["A", "B", "C", "D", "E", "F", "G", "H"]
+        LETTER_LIST = ("A", "B", "C", "D", "E", "F", "G", "H")
         renderer.canvas = tkinter.Canvas(master=root, height=renderer.CANVAS_SIZE, width=renderer.CANVAS_SIZE)
         renderer.canvas.grid(row=1, column=2, rowspan=8, columnspan=8)
         white = True
@@ -100,10 +100,10 @@ class RenderablePiece(api.Renderable):
             
     def update(self, packet: api.ChessUpdatePacket):
         # print(f"Looking for updating {type(self)}")
-        if packet == None:
+        if packet is None:
             return False
         next = packet.new_destination(self.position)
-        if next == None:
+        if next is None:
             return False  
 #        print(f"Next destination found : {next}")            
         if next == vector.Vector2f(-1, -1):
@@ -149,21 +149,23 @@ class RenderablePiece(api.Renderable):
         self.next_position = None
 
     def render_tkinter_with_canvas(self, renderer):
-        if self.display_image is not None:
-            next = None
-            if self.next_position is None:
-                next = self.position
-            else:
-                next = self.next_position
-            real_next = self.convert_to_canvas_coords(renderer, next)
-            position_in_canvas_coords = self.convert_to_canvas_coords(renderer, self.position)
-            renderer.canvas.move(self.display_image, -(position_in_canvas_coords.x - real_next.x),
-                                 -(position_in_canvas_coords.y - real_next.y))
-            self.position = next
-            self.next_position = None
-        else:
+        if self.display_image is None:
             self.load_display_image_canvas(renderer)
+        next = None
+        current_pos = None
+        if self.next_position is None:
+            next = self.position
+            current_pos = vector.Vector2f(0, 7)
+        else:
+            next = self.next_position
+            current_pos = self.position
 
+        real_next = self.convert_to_canvas_coords(renderer, next)
+        position_in_canvas_coords = self.convert_to_canvas_coords(renderer, current_pos)
+        renderer.canvas.move(self.display_image, -(position_in_canvas_coords.x - real_next.x),
+                             -(position_in_canvas_coords.y - real_next.y))
+        self.position = next
+        self.next_position = None
 
     def convert_to_canvas_coords(self, renderer, coords):
         return vector.Vector2f(renderer.CANVAS_SIZE/16 + renderer.CANVAS_SIZE/8 * coords.x,
@@ -176,19 +178,12 @@ class RenderablePiece(api.Renderable):
         """Initialize the images when the program is run"""
         root = renderer.thread.queue.get(timeout=1)
         renderer.thread.queue.put(root)
+
         image = Image.open("rendering/assets/" + self.color + '/' + self.file_name())
-        renderer.canvas.image = ImageTk.PhotoImage(image)
-        self.display_image = renderer.canvas.create_image(renderer.CANVAS_SIZE/16 + renderer.CANVAS_SIZE/8*renderer.canvas.piece_position.x,
-                                                          renderer.CANVAS_SIZE/16 + renderer.CANVAS_SIZE/8*renderer.canvas.piece_position.y,
-                                                          image=renderer.canvas.image)
-        if renderer.canvas.piece_position.x != vector.Vector2f(7, 0).x:
-            renderer.canvas.piece_position = vector.Vector2f(renderer.canvas.piece_position.x + 1, renderer.canvas.piece_position.y)
-        elif renderer.canvas.piece_position == vector.Vector2f(7, 6):
-            renderer.canvas.piece_position = vector.Vector2f(0, 1)
-        else:
-            renderer.canvas.piece_position = vector.Vector2f(0, renderer.canvas.piece_position.y - 1)
+        photo_image = ImageTk.PhotoImage(image)
+        self.display_image = renderer.canvas.create_image(renderer.CANVAS_SIZE/16, renderer.CANVAS_SIZE/16, image=photo_image)
         # To keep a reference and to be able to display the next images
-        renderer.list_images.append(renderer.canvas.image)
+        renderer.list_images.append(photo_image)
 
     def load_display_image_frame(self, renderer):
         root = renderer.thread.queue.get(timeout=1)
@@ -199,68 +194,74 @@ class RenderablePiece(api.Renderable):
         self.display_image = tkinter.Label(master=root, image=render)
         self.display_image.image = render
 
+
 class PawnRenderable(RenderablePiece):
 
     def __init__(self, initial_position, color):
         super().__init__(initial_position, color)
-     
+
     def console_symbol(self):
         return '♙'
-    
+
     def file_name(self):
         return 'pawn.png'
+
 
 class KnightRenderable(RenderablePiece):
 
     def __init__(self, initial_position, color):
         super().__init__(initial_position, color)
-     
+
     def console_symbol(self):
         return '♘' if self.color == 'white' else '♞'
-        
+
     def file_name(self):
         return 'knight.png'
-        
+
+
 class BishopRenderable(RenderablePiece):
  
     def __init__(self, initial_position, color):
         super().__init__(initial_position, color)
-     
+
     def console_symbol(self):
         return '♗' if self.color == 'white' else '♝'
 
     def file_name(self):
         return 'bishop.png'
-        
+
+
 class RookRenderable(RenderablePiece):
 
     def __init__(self, initial_position, color):
         super().__init__(initial_position, color)
-     
+
     def console_symbol(self):
         return '♖' if self.color == 'white' else '♜'
 
     def file_name(self):
         return 'rook.png'
-        
+
+
 class QueenRenderable(RenderablePiece):
 
     def __init__(self, initial_position, color):
         super().__init__(initial_position, color)
-     
+
     def console_symbol(self):
         return '♕' if self.color == 'white' else '♛'
 
     def file_name(self):
         return 'queen.png'
 
+
 class KingRenderable(RenderablePiece):
 
     def __init__(self, initial_position, color):
         super().__init__(initial_position, color)
-     
+
     def console_symbol(self):
         return '♔' if self.color == 'white' else '♚'
-        
+
     def file_name(self):
         return 'king.png'

@@ -61,7 +61,7 @@ class Renderable():
         
     def render_tkinter_with_frame(self, renderer):
         """
-        Implementation of the render method for the FrameTkinterRenderer (not created yet)
+        Implementation of the render method for the FrameTkinterRenderer
         """
         raise NotImplementedError()
 

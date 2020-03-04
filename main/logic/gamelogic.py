@@ -4,16 +4,16 @@ import rendering.api as api
 
 class GameLogic():
 
-    CONTROL_INPUT = [inputparsers.ConsoleInputParser, inputparsers.ConsoleInputParser, inputparsers.TkinterInputParser]
-
     def __init__(self, player1, player2, parser_number, renderer):
-        try:
-            self.input_parser = self.CONTROL_INPUT[parser_number - 1]()
-        except TypeError:
-            self.input_parser = inputparsers.TkinterInputParser(renderer)
-
+        self.input_parser = self.load(parser_number, renderer)
         self.board = pieces_manager.ImaginaryBoard(player1, player2)
-        
+
+    def load(self, parser_number, renderer):
+        """Loads the input parser according to the id given."""
+        if parser_number == 1 or parser_number == 2:
+            return inputparsers.ConsoleInputParser()
+        return inputparsers.TkinterInputParser(renderer)
+
     def play_turn(self) -> api.ChessUpdatePacket:
         start, destination = self.input_parser.wait_for_input()
         print(start, destination)
