@@ -20,7 +20,7 @@ class ChessGame():
 
     def start(self):
         print(f"Starting a new game, opposing {self.player1} with {self.player2}")
-        self.render_board.show()
+        # self.render_board.show()
         while not self.logic.ended:
             packet, extra_piece_required = self.logic.play_turn()
             # Usage of 'is' instead of '=='. We want to check if the instance is the same, not if the two packets are equivalent

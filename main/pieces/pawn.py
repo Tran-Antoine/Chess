@@ -3,7 +3,6 @@
 The tower and the pawn.
 """
 import pieces.gamepiece as gamepiece
-import pieces.directionalpieces as dp
 from util.vector import Vector2f
 
 
@@ -16,7 +15,6 @@ class Pawn(gamepiece.Piece):
         super().__init__(color, position, "pawn")
         # To know whether it can move two cases or only one
         self.already_moved = False
-        # To know whether it can be taken by the en passant
         self.first_move = False
 
     def moves_available(self, board):

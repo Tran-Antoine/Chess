@@ -4,11 +4,12 @@ import rendering.api as api
 import player
 from typing import Tuple
 
+
 class GameLogic():
 
     def __init__(self, player1, player2, parser_number, renderer):
         self.input_parser = self.load(parser_number, renderer)
-        self.board = pieces_manager.ImaginaryBoard(player1, player2)
+        self.board = pieces_manager.ImaginaryBoard(player1.color, player2.color)
         self.p1 = player1
         self.p2 = player2
         self.winner = None
