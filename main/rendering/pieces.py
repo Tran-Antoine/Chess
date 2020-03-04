@@ -63,7 +63,7 @@ class RenderablePiece(api.Renderable):
         if next == None:
             return False  
         # print(f"Next destination found : {next}")            
-        if next == vector.Vector2f(-1, -1):
+        if next == vector.Vector2f.DESTROY:
             self.destroyed = True
             return False
         self.next_position = next
@@ -99,7 +99,7 @@ class RenderablePiece(api.Renderable):
             next = self.next_position
         real_next = self.convert_to_tkinter_coords(next)
         # there might be a better way of doing this
-        self.display_image.grid(column=real_next.x + 1, row=real_next.y + 1)
+        self.display_image.grid(column=int(real_next.x) + 1, row=int(real_next.y) + 1)
         self.position = next
         self.next_position = None
     

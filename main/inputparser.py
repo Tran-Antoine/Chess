@@ -17,3 +17,5 @@ class InputParser():
     def wait_for_input(self) -> List[vector.Vector2f]:
         raise NotImplementedError()
         
+    def wait_for_extra_piece(self) -> str:
+        raise NotImplementedError()
