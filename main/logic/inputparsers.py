@@ -22,7 +22,10 @@ class ConsoleInputParser(inputparser.InputParser):
                 return None, None
             print("Invalid input, try again")
             return self.wait_for_input()
-
+          
+    def wait_for_extra_piece(self):
+        return input("Entrez l'ID de la pièce: ")
+          
 
 class TkinterInputParser(inputparser.InputParser):
 
@@ -101,4 +104,7 @@ class TkinterInputParser(inputparser.InputParser):
         self.renderer.canvas.unbind("<Motion>")
 
         self.final_position = self.renderer.canvas.coords(self.piece_on_tile_chosen)
-        self.wait_for_canvas_input.release()
+        self.wait_for_canvas_input.release()            
+    
+    def wait_for_extra_piece(self):
+        return input("Entrez l'ID de la pièce: ")
