@@ -13,14 +13,14 @@ class ChessBoard():
         Constructs a chessboard from the given renderer
         """
         self.renderer = renderer
-              
+
     def show(self):
         """
         A simple overlay to the initialize() method defined in the
         handled renderer.
         """
         self.renderer.initialize()
-        
+
     def update(self, packet: api.ChessUpdatePacket):
         """
         A simple overlay to the update() method defined in the 

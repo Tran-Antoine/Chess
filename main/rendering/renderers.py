@@ -3,6 +3,7 @@ import rendering.pieces as pieces
 from util.vector import Vector2f
 import threading, queue
 
+
 def initial_row(row, color):
     """
     Used to retrieve a list of renderable pieces according to their initial row.
@@ -94,29 +95,58 @@ ConsoleRenderer.EMPTY_TILE = '- '
 
 class TkinterDisplay(threading.Thread):
 
-    def __init__(self):
+    def __init__(self, is_canvas):
         threading.Thread.__init__(self)
+        self.is_canvas = is_canvas
         self.queue = queue.Queue()
 
     def run(self):
         import tkinter
         root = tkinter.Tk()
         root.title("Chess")
+        # The icon of the root
         root.tk.call('wm', 'iconphoto', root._w, tkinter.PhotoImage(file='rendering/assets/icon.gif'))
+        # The width/height and position of the root only for the canvas
+        if self.is_canvas:
+            root.geometry("860x875+100+100")
         self.queue.put(root)
         root.mainloop()
-        
-class TkinterRenderer(ChessRenderer):
 
-    def __init__(self):
+
+class TkinterRenderer(ChessRenderer):
+    def __init__(self, is_canvas):
         super().__init__()
         self.thread = None
-    
+        self.is_canvas = is_canvas
+
     def initialize(self):
-        self.thread = TkinterDisplay()
+        self.thread = TkinterDisplay(self.is_canvas)
         self.thread.start()
         self.update(None, True)
         print("Display successfully initialized")
 
+
+class FrameTkinterRenderer(TkinterRenderer):
+
+    def __init__(self):
+        super().__init__(False)
+
     def render_call(self, renderable):
-        renderable.render_tkinter(self)
+        renderable.render_tkinter_with_frame(self)
+
+
+class CanvasTkinterRenderer(TkinterRenderer):
+
+    CANVAS_SIZE = 800
+
+    def __init__(self):
+        super().__init__(True)
+        self.canvas = None
+        self.menu = None
+        # To keep a reference and display the pieces
+        self.list_images = []
+        self.cases_position = []
+
+    def render_call(self, renderable):
+        renderable.render_tkinter_with_canvas(self)
+

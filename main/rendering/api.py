@@ -16,7 +16,6 @@ class ChessUpdatePacket():
         self.tile_modifications = tile_modifications
         self.new_piece = new_piece
         
-        
     def new_destination(self, initial):
         """
         Retrieves the destination of a location.
@@ -24,8 +23,8 @@ class ChessUpdatePacket():
         """
         if initial in self.tile_modifications.keys():
             return self.tile_modifications[initial]
-        return None # explicit yet not obligatory return statement to clarify
-        
+        return None  # explicit yet not obligatory return statement to clarify
+
     def __str__(self):
         return self.tile_modifications.__str__()
 
@@ -44,7 +43,7 @@ class Renderable():
     However, renderables are not always enclined to bring modification to the constructed display. Therefore, rendering
     updates are performed only if the update() method returns True, meaning that the object wants to modify the display.
     The renders method take care of that action, and must be defined for each Renderer implementation available.
-    
+
     Renderables can be destroyed, by setting the 'destroyed' field to True. Once a renderable is destroyed,
     the renderer managing it must simply chuck it and stop using it.
     """
@@ -60,12 +59,18 @@ class Renderable():
         """
         raise NotImplementedError()
         
-    def render_tkinter(self, renderer):
+    def render_tkinter_with_frame(self, renderer):
         """
-        Implementation of the render method for the TkinterRenderer (not created yet)
+        Implementation of the render method for the FrameTkinterRenderer
         """
         raise NotImplementedError()
-    
+
+    def render_tkinter_with_canvas(self, renderer):
+        """
+        Implementation of the render method for the CanvasTkinterRenderer
+        """
+        raise NotImplementedError()
+
     def update(self, packet: ChessUpdatePacket):
         """
         Checks whether the renderable wants to modify the display or not.
@@ -75,7 +80,8 @@ class Renderable():
         by the renderer, and then be called to update the display
         """
         raise NotImplementedError()
-      
+
+
 class Renderer():
 
     """
@@ -92,7 +98,7 @@ class Renderer():
         """
         self.renderables = self.get_renderables()
         self.destroyed = False
-        
+
     def initialize(self):
         """
         Initializes the renderer. 
@@ -100,17 +106,17 @@ class Renderer():
         Uninitialized renderers that are updated might cause unexpected results.
         """
         raise NotImplementedError()
-        
+
     def get_renderables(self) -> List[Renderable]:
         """
         Used to load / retrieve the renderables that the Renderer needs to be able to construct his display
         """
         raise NotImplementedError()
-    
+
     def render_call(self, renderable: Renderable):
         """
         Calls one of the render methods of the renderable. For instance, the ConsoleRenderer will call the render_console()
-        method, where as the TkinterRenderer will call the render_tkinter() method.
+        method, where as the TkinterRenderer will call the render_tkinter_with_frame() method.
         Unfortunately, python does not allow several methods to have the same name and parameter length, since object types
         are not explicitely mentionned.
         """
@@ -125,6 +131,6 @@ class Renderer():
         """
         for renderable in self.renderables:
             needs_update = renderable.update(packet)
-            if not renderable.destroyed and (force_update or needs_update):
+            if force_update or needs_update:
                 self.render_call(renderable)
         self.renderables = list(filter(lambda r: not r.destroyed, self.renderables))

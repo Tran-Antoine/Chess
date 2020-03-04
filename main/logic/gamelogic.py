@@ -6,15 +6,22 @@ from typing import Tuple
 
 class GameLogic():
 
-    def __init__(self, player1, player2):
-        self.input_parser = inputparsers.ConsoleInputParser()
-        self.board = pieces_manager.ImaginaryBoard(player1.color, player2.color)
+    def __init__(self, player1, player2, parser_number, renderer):
+        self.input_parser = self.load(parser_number, renderer)
+        self.board = pieces_manager.ImaginaryBoard(player1, player2)
         self.p1 = player1
         self.p2 = player2
         self.winner = None
         self.ended = False
-        
+
+    def load(self, parser_number, renderer):
+        """Loads the input parser according to the id given."""
+        if parser_number == 1 or parser_number == 2:
+            return inputparsers.ConsoleInputParser()
+        return inputparsers.TkinterInputParser(renderer)
+     
     def play_turn(self) -> Tuple[api.ChessUpdatePacket, bool]:
+      
         start, destination = self.input_parser.wait_for_input()
         if start is destination is None:
             return api.ChessUpdatePacket.STOP, False
@@ -24,6 +31,7 @@ class GameLogic():
             self.ended = self.is_ended(self.p1, self.p2)
             self.p1, self.p2 = self.p2, self.p1
             return packet, extra_piece_required
+        
         print("Invalid move, please try again")
         return self.play_turn()
         
@@ -41,5 +49,3 @@ class GameLogic():
                 self.winner = attacker
             return True
         return False
-
-
