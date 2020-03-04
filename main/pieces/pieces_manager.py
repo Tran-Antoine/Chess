@@ -24,7 +24,7 @@ class ImaginaryBoard():
     PIECES_TYPE = [dp.Rook, knight.Knight, dp.Bishop, dp.Queen,
                    king.King, dp.Bishop, knight.Knight, dp.Rook]
     
-    ID_MAP = {id:piece for id, piece in zip(("R", "Kn", "B", "Q", "Ki", "P"), PIECES_TYPE + [pawn.Pawn])}
+    ID_MAP = {id: piece for id, piece in zip(("R", "Kn", "B", "Q", "Ki", "P"), PIECES_TYPE + [pawn.Pawn])}
 
     def __init__(self, *colors):
         self.colors = colors
@@ -172,15 +172,15 @@ class ImaginaryBoard():
     def add_extra_piece(self, id):
         assert self.pending_todelete_pawn is not None
         
-        new_piece = ID_MAP[id](self.pending_todelete_pawn.color, self.pending_todelete_pawn.position)
+        new_piece = ImaginaryBoard.ID_MAP[id](self.pending_todelete_pawn.color, self.pending_todelete_pawn.position)
         pawn = self.pending_todelete_pawn
-        changes = {pawn.position, Vector2f.DESTROY}
+        changes = {pawn.position: Vector2f.DESTROY}
         
         pawn.position = Vector2f.DESTROY
         self.pieces.append(new_piece)
         self.pending_todelete_pawn = None
         
-        return ChessPacket(changes, new_piece=new_piece)  # todo, convert the game piece to a renderable piece
+        return ChessUpdatePacket(changes, new_piece=new_piece)  # todo, convert the game piece to a renderable piece
 
     def _cancel_move(self, canceller):
         for piece in self.pieces:
