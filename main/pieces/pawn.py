@@ -24,18 +24,20 @@ class Pawn(gamepiece.Piece):
         moves = []
         self.add_regular_moves(board, moves)
         self.add_taking_moves(board, moves)
-        return list(map(lambda v: self.to_simple_move_data(v), moves))
+        return list(map(lambda vec: self.to_simple_move_data(vec), moves))
     
     def add_regular_moves(self, board, moves):
         direction = Vector2f(0, 1) if self.color.color_name == 'white' else Vector2f(0, -1)
-        self.add_if_empty(board, moves, self.position + direction)
+        can_go_forward = self.add_if_empty(board, moves, self.position + direction)
         # When it is the first time the pawn moves, it can moves 2 cases
-        if not self.already_moved:
+        if can_go_forward and not self.already_moved:
             self.add_if_empty(board, moves, self.position + direction.scalar_mult(2))
 
     def add_if_empty(self, board, moves, destination):
         if board.piece_at_location(destination) is None:
             moves.append(destination)
+            return True
+        return False
         
     def add_taking_moves(self, board, moves):
         """
