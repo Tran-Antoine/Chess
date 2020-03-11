@@ -21,9 +21,9 @@ class ChessBoard():
         """
         self.renderer.initialize()
 
-    def update(self, packet: api.ChessUpdatePacket):
+    def update(self, packet: api.ChessUpdatePacket, force_update=False):
         """
         A simple overlay to the update() method defined in the 
         handled renderer.
         """
-        self.renderer.update(packet)
+        self.renderer.update(packet, force_update)

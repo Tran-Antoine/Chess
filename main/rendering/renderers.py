@@ -28,7 +28,17 @@ class ChessRenderer(api.Renderer):
 
     def __init__(self):
         super().__init__()
-        
+    
+    def create_new_piece(self, id, color, position):
+        for piece in ChessRenderer._list_pieces(color, position):
+            if piece.name == id:
+                super().add(piece)
+    
+    @staticmethod
+    def _list_pieces(color, position):
+        f = lambda construct: construct(position, color)
+        return list(map(f, (pieces.PawnRenderable, pieces.KnightRenderable, pieces.BishopRenderable, 
+                            pieces.QueenRenderable, pieces.RookRenderable, pieces.KingRenderable)))
     def get_renderables(self):
         """
         Loads the 4 initial rows, each piece being an instance of the RenderablePiece class.

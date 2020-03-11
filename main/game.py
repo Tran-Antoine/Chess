@@ -5,8 +5,8 @@ from player import Player
 
 class ChessGame():
 
-    VIEW = [renderers.ConsoleRenderer, renderers.FrameTkinterRenderer, renderers.CanvasTkinterRenderer]
-
+    VIEW = (renderers.ConsoleRenderer, renderers.FrameTkinterRenderer, renderers.CanvasTkinterRenderer)
+    
     def __init__(self, chosen_interface, player1=Player.DEFAULT_1, player2=Player.DEFAULT_2):
         # To choose which view the user wants.
         self.player1 = player1
@@ -20,7 +20,7 @@ class ChessGame():
 
     def start(self):
         print(f"Starting a new game, opposing {self.player1} with {self.player2}")
-        # self.render_board.show()
+
         while not self.logic.ended:
             packet, extra_piece_required = self.logic.play_turn()
             # Usage of 'is' instead of '=='. We want to check if the instance is the same, not if the two packets are equivalent
@@ -29,8 +29,8 @@ class ChessGame():
             self.render_board.update(packet)
             
             if extra_piece_required:
-                additional_packet = self.logic.add_extra_piece()
-                print("Successfully got extra piece")
+                additional_packet, id, color, position = self.logic.add_extra_piece()
+                self.renderer.create_new_piece(id, color, position)
                 self.render_board.update(additional_packet)
 
         winner = self.logic.winner

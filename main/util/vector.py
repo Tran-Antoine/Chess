@@ -37,3 +37,4 @@ class Vector2f():
 
 
 Vector2f.DESTROY = Vector2f(-1, -1)
+Vector2f.VOID = Vector2f(-2, -2)

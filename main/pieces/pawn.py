@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 The tower and the pawn.
 """
@@ -59,4 +58,4 @@ class Pawn(gamepiece.Piece):
     def moved(self):
         self.already_moved = True
         # todo : give the user the choice for the piece
-        return self.position.y in (0, 7)
+        return self.position.y in (0, 3)

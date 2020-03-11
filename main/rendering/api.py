@@ -8,12 +8,11 @@ class ChessUpdatePacket():
     """
     # tile_modifications links a position with a new position.
     # If new position is -1, -1, piece is destroyed
-    def __init__(self, tile_modifications, new_piece=None):
+    def __init__(self, tile_modifications):
         """
         Constructs a packet from a dictionnary linking initial positions to destinations.
         """
         self.tile_modifications = tile_modifications
-        self.new_piece = new_piece
         
     def new_destination(self, initial):
         """
@@ -105,12 +104,15 @@ class Renderer():
         Uninitialized renderers that are updated might cause unexpected results.
         """
         raise NotImplementedError()
-
+    
     def get_renderables(self) -> List[Renderable]:
         """
         Used to load / retrieve the renderables that the Renderer needs to be able to construct his display
         """
         raise NotImplementedError()
+    
+    def add(self, renderable: Renderable):
+        self.renderables.append(renderable)
 
     def render_call(self, renderable: Renderable):
         """
@@ -127,7 +129,7 @@ class Renderer():
         By default, the object will simply go through every renderable it manages, checks whether they 
         want to update the display, asks them to do so if they want to, and eventually removes all the
         destroyed renderables of the list
-        """
+        """            
         for renderable in self.renderables:
             needs_update = renderable.update(packet)
             if force_update or needs_update:
