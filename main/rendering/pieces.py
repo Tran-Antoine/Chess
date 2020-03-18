@@ -160,17 +160,14 @@ class RenderablePiece(api.Renderable):
         else:
             next = self.next_position
             current_pos = self.position
+            renderer.invalidate()
 
-        real_next = self.convert_to_canvas_coords(renderer, next)
-        position_in_canvas_coords = self.convert_to_canvas_coords(renderer, current_pos)
+        real_next = renderer.convert_to_canvas_coords(next)
+        position_in_canvas_coords = renderer.convert_to_canvas_coords(current_pos)
         renderer.canvas.move(self.display_image, -(position_in_canvas_coords.x - real_next.x),
                              -(position_in_canvas_coords.y - real_next.y))
         self.position = next
         self.next_position = None
-
-    def convert_to_canvas_coords(self, renderer, coords):
-        return vector.Vector2f(renderer.CANVAS_SIZE/16 + renderer.CANVAS_SIZE/8 * coords.x,
-                               (renderer.CANVAS_SIZE - renderer.CANVAS_SIZE/16) - renderer.CANVAS_SIZE/8*coords.y)
 
     def convert_to_tkinter_coords(self, coords):
         return vector.Vector2f(coords.x, 7 - coords.y)

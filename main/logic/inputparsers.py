@@ -16,7 +16,7 @@ class ConsoleInputParser(inputparser.InputParser):
             conversion = lambda letter: 'ABCDEFGH'.index(letter)
             initial_position = vector.Vector2f(conversion(target[0]), int(target[1])-1)
             final_position = vector.Vector2f(conversion(destination[0]), int(destination[1])-1)
-            return (initial_position, final_position)
+            return initial_position, final_position
         except ValueError:
             if move == 'stop':
                 return None, None
@@ -52,15 +52,19 @@ class TkinterInputParser(inputparser.InputParser):
         self.wait_for_canvas_input.acquire()
         if not self.continue_game:
             return None, None
-        # Put the piece at his initial position, in case the move is invalid
-        self.renderer.canvas.move(self.piece_on_tile_chosen, self.initial_position[0] - self.final_position[0],
-                                  self.initial_position[1] - self.final_position[1])
+        # Used to put the piece at his initial position after, so it does not create a problem if the move is invalid.
+        list_of_moves_for_canvas = [self.piece_on_tile_chosen, self.initial_position[0] - self.final_position[0],
+                                    self.initial_position[1] - self.final_position[1]]
+        self.renderer.list_of_moves_for_canvas = list_of_moves_for_canvas
 
         real_initial_position = self.convert_to_chess_coords(self.initial_position)
         real_final_position = self.convert_to_chess_coords(self.final_position)
         return real_initial_position, real_final_position
 
     def convert_to_chess_coords(self, position):
+        # In case it is not initialized
+        position_x = 0
+        position_y = 0
         for i in range(8):
             if self.renderer.CANVAS_SIZE/8 * i <= position[0] < self.renderer.CANVAS_SIZE/8 * (i + 1):
                 position_x = i

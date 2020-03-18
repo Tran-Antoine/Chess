@@ -106,6 +106,14 @@ class Renderer():
         """
         raise NotImplementedError()
 
+    def invalidate(self):
+        """
+        Used to invalidate the move of a piece on the canvas, when the move is invalid or just before the renderer
+        move the piece on the canvas (When the move is valid).
+        By default, this method do nothing, it will only be implemented with the CanvasRenderer.
+        """
+        pass
+
     def get_renderables(self) -> List[Renderable]:
         """
         Used to load / retrieve the renderables that the Renderer needs to be able to construct his display

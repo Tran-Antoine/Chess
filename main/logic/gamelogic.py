@@ -8,6 +8,7 @@ from typing import Tuple
 class GameLogic():
 
     def __init__(self, player1, player2, parser_number, renderer):
+        self.renderer = renderer
         self.input_parser = self.load(parser_number, renderer)
         self.board = pieces_manager.ImaginaryBoard(player1.color, player2.color)
         self.p1 = player1
@@ -22,7 +23,6 @@ class GameLogic():
         return inputparsers.TkinterInputParser(renderer)
      
     def play_turn(self) -> Tuple[api.ChessUpdatePacket, bool]:
-      
         start, destination = self.input_parser.wait_for_input()
         if start is destination is None:
             return api.ChessUpdatePacket.STOP, False
@@ -34,6 +34,7 @@ class GameLogic():
             return packet, extra_piece_required
         
         print("Invalid move, please try again")
+        self.renderer.invalidate()
         return self.play_turn()
         
     def add_extra_piece(self):

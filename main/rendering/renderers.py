@@ -150,6 +150,17 @@ class CanvasTkinterRenderer(TkinterRenderer):
         # To keep a reference and display the pieces
         self.list_images = []
         self.cases_position = []
+        self.list_of_moves_for_canvas = None
+
+    def invalidate(self):
+        if self.list_of_moves_for_canvas is not None:
+            self.canvas.move(self.list_of_moves_for_canvas[0],
+                             self.list_of_moves_for_canvas[1], self.list_of_moves_for_canvas[2])
+        self.list_of_moves_for_canvas = None
+
+    def convert_to_canvas_coords(self, coords):
+        return Vector2f(self.CANVAS_SIZE/16 + self.CANVAS_SIZE/8 * coords.x,
+                        (self.CANVAS_SIZE - self.CANVAS_SIZE/16) - self.CANVAS_SIZE/8*coords.y)
 
     def render_call(self, renderable):
         renderable.render_tkinter_with_canvas(self)
