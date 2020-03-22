@@ -108,7 +108,7 @@ class TkinterDisplay(threading.Thread):
         root = tkinter.Tk()
         root.title("Chess")
         # The icon of the root
-        # root.tk.call('wm', 'iconphoto', root._w, tkinter.PhotoImage(file='rendering/assets/icon.gif'))
+        root.tk.call('wm', 'iconphoto', root._w, tkinter.PhotoImage(file='rendering/assets/icon.gif'))
         # The width/height and position of the root only for the canvas
         if self.is_canvas:
             root.geometry("860x875+100+100")

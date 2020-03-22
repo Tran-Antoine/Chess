@@ -2,7 +2,6 @@ import rendering.api as api
 import rendering.renderers as renderers # todo : why does api.py need this remote import ??
 import util.vector as vector
 import tkinter
-import threading
 from PIL import Image, ImageTk
 
 
@@ -54,13 +53,10 @@ class RenderableBoard(api.Renderable):
 
                 white = not white
             white = not white
-        # position where the first piece should be on the canvas
-        renderer.canvas.piece_position = vector.Vector2f(0, 7)
 
     def create_menu(self, master, renderer):
         """The menus will be added from other classes such as logic.inputparsers.py"""
         renderer.menu = tkinter.Menu(master)
-        # renderer.menu.add_command(label="quit")
         master.config(menu=renderer.menu)
 
     def display_labels(self, root, letter_list, index):
