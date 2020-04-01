@@ -2,7 +2,6 @@ import rendering.api as api
 import rendering.renderers as renderers # todo : why does api.py need this remote import ??
 import util.vector as vector
 import tkinter
-from PIL import Image, ImageTk
 
 
 class RenderableBoard(api.Renderable):
@@ -173,8 +172,8 @@ class RenderablePiece(api.Renderable):
         root = renderer.thread.queue.get(timeout=1)
         renderer.thread.queue.put(root)
 
-        image = Image.open("rendering/assets/" + self.color + '/' + self.file_name())
-        photo_image = ImageTk.PhotoImage(image)
+        file = "rendering/assets/" + self.color + '/' + self.file_name()
+        photo_image = tkinter.PhotoImage(file=file)
         self.display_image = renderer.canvas.create_image(renderer.CANVAS_SIZE/16, renderer.CANVAS_SIZE/16, image=photo_image)
         # To keep a reference and to be able to display the next images
         renderer.list_images.append(photo_image)
@@ -183,8 +182,8 @@ class RenderablePiece(api.Renderable):
         root = renderer.thread.queue.get(timeout=1)
         renderer.thread.queue.put(root)
 
-        image = Image.open("rendering/assets/" + self.color + '/' + self.file_name())
-        render = ImageTk.PhotoImage(image)
+        file = "rendering/assets/" + self.color + '/' + self.file_name()
+        render = tkinter.PhotoImage(file=file)
         self.display_image = tkinter.Label(master=root, image=render)
         self.display_image.image = render
 
